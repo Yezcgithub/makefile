@@ -8,6 +8,7 @@
 # @Coding format UTF-8
 # https://github.com/Yezcgithub/makefile
 # https://gitee.com/yezc/makefile
+
 #============================
 # -License
 #============================
@@ -117,7 +118,7 @@ export MF_CONFIGURE_OTHER_INCLUDE_PATHS=""
 #  Example: 
 #  -  = "-lpthread -lrt -lm -ldl"
 #  -  += "-ldl"
-exportMF_CONFIGURE_USING_STD_LIBRARY_FLAGS=""
+export MF_CONFIGURE_USING_STD_LIBRARY_FLAGS=""
 
 # -#The libraries written by oneself or those from third parties#
 #  Example: 
@@ -205,9 +206,9 @@ export MF_CONFIGURE_COMPILE_PATH_PREFIX=""
 # By default, it is set to ?= $(OS), which can automatically detect whether it is on a Windows system.
 # Of course, it can also be specified manually directly.
 #  Example:
-#  -  auto    ：$(OS)
-#  -  windows ：= WINDOWS or = Windows_NT
-#  -  linux   ：= LINUX   or =
+#  -  auto    $(OS)
+#  -  windows = WINDOWS or = Windows_NT
+#  -  linux   = LINUX   or =
 #export MF_CONFIGURE_PLATFORM_OS="LINUX"
 
 #----------------------------
