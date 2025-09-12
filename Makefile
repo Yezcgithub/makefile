@@ -212,8 +212,8 @@ MF_CONFIGURE_CPP_FLAGS    += -g
 #  += -Wno-unused-variable , To disable warnings for unused variables
 #  += -Wno-unused-label , To disable warnings for unused labels
 #  += -Wno-unused-function , To disable warnings for unused functions
-MF_CONFIGURE_C_FLAGS      += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion -Wstrict-prototypes
-MF_CONFIGURE_CPP_FLAGS    += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion -Wstrict-prototypes
+MF_CONFIGURE_C_FLAGS      += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+MF_CONFIGURE_CPP_FLAGS    += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
 
 #----------------------------
 # -Dynamic library export symbols
@@ -301,7 +301,7 @@ MF_CONFIGURE_BUSYBOX_TOOLS         ?= "./tools/windows_tools/busybox"
 #============================
 MF_VERSION      := 1
 MF_PATCHLEVEL   := 0
-MF_SUBLEVEL     := 10
+MF_SUBLEVEL     := 11
 MF_EXTRAVERSION := 0
 MF_NAME         := "Universal Makefile"
 
@@ -549,7 +549,7 @@ MF_PARAM_TARGET_LIB_DYNAMIC       := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/lib$(M
 # This is merely used to set the target name.
 MF_PARAM_TARGET_LIB_STATICDYNAMIC := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/lib$(MF_CONFIGURE_TARGET_FILE_NAME)_a_so
 
-# DEBUG TARGET, (MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG = RELEASE_AND_DEBUG)
+# debug target, (MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG = RELEASE_AND_DEBUG)
 MF_PARAM_TARGET_EXECUTE_DEBUG     := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_CONFIGURE_TARGET_FILE_NAME)_debug$(MF_PLATFORM_TARGET_EXECUTE_SUFFIX)
 MF_PARAM_TARGET_LIB_STATIC_DEBUG  := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/lib$(MF_CONFIGURE_TARGET_FILE_NAME)_debug$(MF_PLATFORM_TARGET_LIB_STATIC_SUFFIX)
 MF_PARAM_TARGET_LIB_DYNAMIC_DEBUG := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/lib$(MF_CONFIGURE_TARGET_FILE_NAME)_debug$(MF_PLATFORM_TARGET_LIB_DYNAMIC_SUFFIX)
@@ -593,9 +593,9 @@ $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.i : %.c
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(MF_CONFIGURE_USING_FORMATTEND_LOG), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "[PREPROCESS] $< -> $@"
-	@$(MF_COMPILE_TOOL_CC) -E "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	@$(MF_PARAM_COMPILE_TOOL_CC) -E "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 else
-	$(MF_COMPILE_TOOL_CC) -E "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	$(MF_PARAM_COMPILE_TOOL_CC) -E "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 endif
 
 #----------------------------
@@ -605,9 +605,9 @@ $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.s : %.c
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(MF_CONFIGURE_USING_FORMATTEND_LOG), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "[ASSEMBLY] $< -> $@"
-	@$(MF_COMPILE_TOOL_CC) -S "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	@$(MF_PARAM_COMPILE_TOOL_CC) -S "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 else
-	$(MF_COMPILE_TOOL_CC) -S "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	$(MF_PARAM_COMPILE_TOOL_CC) -S "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 endif
 
 #----------------------------
@@ -617,9 +617,9 @@ $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o : %.c
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(MF_CONFIGURE_USING_FORMATTEND_LOG), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "[CC] $<"
-	@$(MF_COMPILE_TOOL_CC) $(MF_CONFIGURE_C_OBJECTS_FLAGS) -c "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	@$(MF_PARAM_COMPILE_TOOL_CC) $(MF_CONFIGURE_C_OBJECTS_FLAGS) -c "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 else
-	$(MF_COMPILE_TOOL_CC) $(MF_CONFIGURE_C_OBJECTS_FLAGS) -c "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	$(MF_PARAM_COMPILE_TOOL_CC) $(MF_CONFIGURE_C_OBJECTS_FLAGS) -c "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 endif
 
 #----------------------------
