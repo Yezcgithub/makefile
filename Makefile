@@ -7,6 +7,7 @@
 # @Coding format UTF-8
 # https://github.com/Yezcgithub/makefile
 # https://gitee.com/yezc/makefile
+
 #============================
 # -License
 #============================
@@ -301,7 +302,7 @@ MF_CONFIGURE_BUSYBOX_TOOLS         ?= "./tools/windows_tools/busybox"
 #============================
 MF_VERSION      := 1
 MF_PATCHLEVEL   := 0
-MF_SUBLEVEL     := 11
+MF_SUBLEVEL     := 12
 MF_EXTRAVERSION := 0
 MF_NAME         := "Universal Makefile"
 
