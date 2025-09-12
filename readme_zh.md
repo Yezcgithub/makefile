@@ -1,11 +1,42 @@
-# 一个适用于中小型项目通用Makefile文件
+# 一个跨平台通用的Makefile文件
 
-配置说明
+
+
+
+## 一、背景
+
+​		很高兴你能看到这个开源项目，希望这个项目能帮到你。
+​		本人是一个c\c++开发工作者，每次在开发一个新的项目都要整理重写一个makefile文件，这样让我感到非常麻烦。同时我也使用过其他的管理工具，如automake、cmake、scons。嗯... , 并不是说他们不好，只是我觉得没有必要。我还是在想把makefile这么写的更加的通用，更加的人性化一点，毕竟写起来的话它们的依赖关系是比较复杂的。更加上我的开发环境有可能在windows下开发，虽然在windows下写c\c++代码有很好的软件工具支持。既然要做，那做好它，跨平台必须支持。期间看了make官网的文档，参考了Linux kernel的makefile现实等，最终完成了这个项目。
+
+项目在github的路径 : https://github.com/Yezcgithub/makefile
+项目在gitee的路径   : https://gitee.com/yezc/makefile
+
+## 二、功能
+
+1. 支持跨平台
+2. 支持可配置交叉编译
+3. 支持可配置只编译C语言文件或C\C++文件混合编译
+4. 支持可配置生成目标文件有可执行程序、动态库、静态库以及同时生成动态和静态库
+5. 支持可配置生成 release、debug 以及同时生成 release 和 debug 版本
+6. 支持可配置生成的目标文件及生成的中间文件的保存位置
+7. 支持生成预处理文件和生成汇编文件命令
+
+## 三、优点
+
+1. 简洁，核心只有一个Makefile文件
+2. 跨平台，它可以自动识别所在平台，不需要配置就可以直接使用
+   - 在Linux中直接拷贝Makefile文件到工程中就可以直接使用
+   - 在Windows中需要busybox的支持，你可以在 "./tools/windows_tools" 中找到它，也可以在busybox官网中下载最新版本 https://frippery.org/busybox/，在Windows使用Makefile该文件时，在拷贝Makefile文件的同时把 tools 文件夹一起拷到你的工程中即可
+2. 配置方便，在Makefile文件中你只要关心带有前缀 "MF_CONFIGURE_" 的变量，并且增加了大量的说明及示例，这样能非常方便的对每个工程个性化管理的需求
+3. 结合脚本使用，你可以不用修改Makefile文件，在脚本中直接配置你的个性化需求，可以在工程中查看 build.sh 脚本文件(Linux使用的) 和  build.bat 脚本文件(Windows使用的)
+4. 健壮性，在Makefile文件中增加了很多的校验，它能增加在执行make时不容易出错，能够提前告知你配置的问题设置
+5. 便于学习，如果近期你想了解或学习Makefile文件的知识，该项目是一个非常好的学习资料。在该项目中使用到了大部分的Makefile知识点，并且拥有大量的注释说明。在 "./doc" 文件夹中保存了make.pdf文件，这个也是你学习之路的不可或缺的的资料文件。当然也可以到make官网上下载最新的文档 https://www.gnu.org/software/make/
+
+## 四、配置说明
+
+### 1、配置文件和路径
 
 ```makefile
-#----------------------------
-# -配置文件和路径
-#----------------------------
 # -#配置生成目标文件名称#
 #  注意:不能为空
 #  例子: 
@@ -75,10 +106,11 @@ MF_CONFIGURE_EXCLUDED_FILES                ?=
 #  -  ?= ../src/inc ./lib
 #  -  += ../lib/inc
 MF_CONFIGURE_OTHER_INCLUDE_PATHS           ?=
+```
 
-#----------------------------
-# -添加配置
-#----------------------------
+### 2、添加参数配置
+
+```makefile
 # -#在程序中用到的第3方库,编译时需要添加#
 #-L：依赖的库所在的目录名
 #-l：依赖的具体库 -L./lib -ltest
@@ -111,10 +143,11 @@ MF_CONFIGURE_USING_LIBRARY_FLAGS           ?=
 #  -  += __YECC_NUM=1
 #  -  += APP_VERSION=1.0.0
 MF_CONFIGURE_ADD_USER_DEFINE               ?=
+```
 
-#----------------------------
-# -编译配置
-#----------------------------
+### 3、设置文件编译选项
+
+```makefile
 # -#编译后的目标文件输出类型#
 #  参数 = [RELEASE] 删除可执行文件中的符号表,符号表不影响程序的运行,减小程序体积
 #  参数 = [DEBUG]   保留可执行文件中的符号表,使用gdb调试时要设置为 NO
@@ -149,10 +182,11 @@ MF_CONFIGURE_DELETING_INTERMEDIATE_FILES   ?= NO
 #  参数 = [YES]  使用格式化显示,能整齐的打印正在编译的文件名
 #  参数 = [NO]   打印GUN日志
 MF_CONFIGURE_USING_FORMATTEND_LOG          ?= YES
+```
 
-#----------------------------
-# -调试选项
-#----------------------------
+### 4、调试选项
+
+```makefile
 #  += -g        在编译的时候,产生调试信息
 #  += -gstabs   此选项以stabs格式声称调试信息,但是不包括gdb调试信息. 
 #  += -gstabs+  此选项以stabs格式声称调试信息,并且包含仅供gdb使用的额外调试信息.
@@ -160,10 +194,11 @@ MF_CONFIGURE_USING_FORMATTEND_LOG          ?= YES
 #  += -glevel   请求生成调试信息，同时用level指出需要多少信息，默认的level值是2
 MF_CONFIGURE_C_FLAGS      += -g
 MF_CONFIGURE_CPP_FLAGS    += -g
+```
 
-#----------------------------
-# -错误与告警选项
-#----------------------------
+### 5、错误与告警选项
+
+```makefile
 # -基本警告控制
 #  += -w 关闭所有编译警告
 #  += -Wall 启用所有常用警告(未使用变量、未初始化变量、函数未声明等)
@@ -188,6 +223,11 @@ MF_CONFIGURE_CPP_FLAGS    += -g
 MF_CONFIGURE_C_FLAGS      += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion -Wstrict-prototypes
 MF_CONFIGURE_CPP_FLAGS    += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion -Wstrict-prototypes
 
+```
+
+### 6、其他参数配置
+
+```makefile
 #----------------------------
 # -动态库导出符号
 #----------------------------
@@ -265,8 +305,6 @@ MF_CONFIGURE_PLATFORM_OS          ?= $(OS)
 #  -  ?= "./tools/busybox"
 MF_CONFIGURE_BUSYBOX_TOOLS         ?= "./tools/windows_tools/busybox"
 ```
-
-
 
 # The MIT License (MIT)
 

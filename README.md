@@ -1,11 +1,40 @@
-# A general Makefile file applicable to medium and small-sized projects
+# A cross-platform universal Makefile file
 
-Configuration Instructions
+
+
+## 1、Project Overview
+
+​		I am a C/C++ developer. Every time I start a new project, I have to re-organize and rewrite the makefile. This is very troublesome for me. At the same time, I have also used other management tools such as Automake, CMake, and Scons. Well... They are not bad, but I think they are unnecessary. I still want to make the makefile more universal and user-friendly. After all, their dependency relationships are quite complex. Moreover, my development environment may be on Windows. Although there are excellent software tools for writing C/C++ code on Windows, I still decided to do it. I want to do it well and ensure cross-platform support. During this process, I referred to the documentation of the Make website and the makefile of the Linux kernel. 
+
+The path of the project on GitHub : https://github.com/Yezcgithub/makefile
+The path of the project on Gitee   : https://gitee.com/yezc/makefile
+
+## 2、Project Features
+
+1. Support cross-platform
+2. Support configurable cross-compilation
+3. Support configurable compilation of either C language files or a mixture of C and C++ files
+4. Support configurable generation of target files including executable programs, dynamic libraries, static libraries, and simultaneous generation of dynamic and static libraries
+5. Support configurable generation of release, debug, and simultaneous generation of release and debug versions
+6. Support configurable saving locations for generated target files and generated intermediate files
+7. Support generation of preprocessor files and assembly file commands
+
+## 3、Advantages
+
+1. Simple, with only one Makefile file as the core.
+2. Cross-platform, it can automatically identify the current platform and can be used directly without any configuration.
+   - In Linux, you can simply copy the Makefile file to the project directory and it can be used directly.
+   - In Windows, busybox support is required. You can find it in "./tools/windows_tools". Alternatively, you can download the latest version from the busybox official website: https://frippery.org/busybox/. When using the Makefile in Windows, simply copy the Makefile file and the "tools" folder together to your project directory.
+3. The configuration is convenient. In the Makefile file, you only need to pay attention to the variables prefixed with "MF_CONFIGURE_", and a large number of explanations and examples have been added. This makes it very convenient to meet the personalized management requirements for each project.
+4. When used in conjunction with the script, you can directly configure your personalized requirements within the script without modifying the Makefile. You can view the build.sh script file (used on Linux) and the build.bat script file (used on Windows) in the project.
+5. Robustness. In the Makefile, many checks have been added. This can reduce the likelihood of errors during the execution of make and can proactively alert you to any configuration issues.
+6. It is convenient for learning. If you want to learn or understand the knowledge of Makefile files in the near future, this project is an excellent learning resource. Most of the Makefile knowledge points are used in this project, and there are also a large number of comments and explanations. The make.pdf file is saved in the "./doc" folder, which is also an indispensable reference file on your learning journey. Of course, you can also download the latest documentation from the Make website: https://www.gnu.org/software/make/
+
+## 4、Configuration Instructions
+
+### 1、Configuration files and paths
 
 ```makefile
-#----------------------------
-# -Configuration files and paths
-#----------------------------
 # -# Configure to generate the target file name #
 #  Note: Cannot be empty
 #  Example: 
@@ -75,10 +104,11 @@ MF_CONFIGURE_EXCLUDED_FILES                ?=
 #  -  ?= ../src/inc ./lib
 #  -  += ../lib/inc
 MF_CONFIGURE_OTHER_INCLUDE_PATHS           ?=
+```
 
-#----------------------------
-# -Add configuration
-#----------------------------
+### 2、Add parameter configuration
+
+```makefile
 # -# The third-party libraries used in the program, need to be added during compilation#
 # -L: The directory name where the dependent libraries are located
 # -l: The specific library to be used -L./lib -ltest
@@ -111,10 +141,11 @@ MF_CONFIGURE_USING_LIBRARY_FLAGS           ?=
 #  -  += __YECC_NUM=1
 #  -  += APP_VERSION=1.0.0
 MF_CONFIGURE_ADD_USER_DEFINE               ?=
+```
 
-#----------------------------
-# -Compilation configuration
-#----------------------------
+### 3、Set file compilation options
+
+```makefile
 # -#Output type of the compiled target file#
 # Parameter = [RELEASE] Remove the symbol table from the executable file. The symbol table does not affect the program's operation and can reduce the file size.
 # Parameter = [DEBUG] Keep the symbol table in the executable file. Set to NO when using gdb for debugging.
@@ -149,10 +180,11 @@ MF_CONFIGURE_DELETING_INTERMEDIATE_FILES   ?= NO
 # Parameter = [YES] Displays the formatted log, allowing the filenames being compiled to be printed neatly
 # Parameter = [NO]  Prints the default log
 MF_CONFIGURE_USING_FORMATTEND_LOG          ?= YES
+```
 
-#----------------------------
-# -Debugging options
-#----------------------------
+### 4、Debugging options
+
+```makefile
 #  += -g        During compilation, generate debugging information
 #  += -gstabs   This option claims debugging information in stabs format, but does not include gdb debugging information.
 #  += -gstabs+  This option claims debugging information in stabs format and includes additional debugging information specifically for gdb.
@@ -160,10 +192,11 @@ MF_CONFIGURE_USING_FORMATTEND_LOG          ?= YES
 #  += -glevel   Request to generate debugging information, and specify the level of information needed using the 'level' parameter. The default level value is 2.
 MF_CONFIGURE_C_FLAGS      += -g
 MF_CONFIGURE_CPP_FLAGS    += -g
+```
 
-#----------------------------
-# -Error and Alert Options
-#----------------------------
+### 5、Error and Alert Options
+
+```makefile
 #  += -w , To disable all compilation warnings
 #  += -Wall , To enable all common warnings (unused variables, uninitialized variables, undeclared functions, etc.)
 #  += -Wextra , To add additional warnings beyond -Wall (such as empty parameters, implicit loss of type conversions, etc.)
@@ -186,6 +219,11 @@ MF_CONFIGURE_CPP_FLAGS    += -g
 #  += -Wno-unused-function , To disable warnings for unused functions
 MF_CONFIGURE_C_FLAGS      += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion -Wstrict-prototypes
 MF_CONFIGURE_CPP_FLAGS    += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion -Wstrict-prototypes
+```
+
+### 6、Other parameter settings
+
+```makefile
 
 #----------------------------
 # -Dynamic library export symbols
