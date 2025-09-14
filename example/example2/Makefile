@@ -7,6 +7,7 @@
 # @Coding format UTF-8
 # https://github.com/Yezcgithub/makefile
 # https://gitee.com/yezc/makefile
+
 #============================
 # -License
 #============================
@@ -27,6 +28,17 @@
 # NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+#============================
+# -Makeflie Configuration
+#============================
+#----------------------------
+# -Configuration related to the script
+#----------------------------
+# -#Configuration compilation method#
+#  Parameter = [YES] It can only be compiled by a script. When using make for compilation, it will prompt to use the script for execution (the script must set this variable and the value must not be "YES")
+#  Parameter = [NO]  You can directly use "make" to compile.
+MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT        ?= NO
 
 #============================
 # -Makeflie Configuration
@@ -102,7 +114,7 @@ MF_CONFIGURE_EXCLUDED_FILES                ?=
 #  -  ?= .
 #  -  ?= ../src/inc ./lib
 #  -  += ../lib/inc
-MF_CONFIGURE_OTHER_INCLUDE_PATHS           ?= ./lib/addition ./lib/multiplication ./lib/division ./lib/subtraction
+MF_CONFIGURE_OTHER_HEADER_FILE_PATHS       ?= ./lib/addition ./lib/multiplication ./lib/division ./lib/subtraction
 
 #----------------------------
 # -Add configuration
@@ -126,7 +138,7 @@ MF_CONFIGURE_USING_STD_LIBRARY_FLAGS       ?=
 #  -  ?= -L./lib/timer -ltimer -L./lib/test -ltest
 #  -  += -L./lib/media -lmedia
 #  -  += -L./lib -ltest -ltest1 -ltest2
-MF_CONFIGURE_USING_LIBRARY_FLAGS           ?= -L./lib -llibcalculator
+MF_CONFIGURE_USING_LIBRARY_FLAGS           ?= -L./lib -lcalculator
 
 # -# Add User Macro Definitions #
 #  These macros can be used in the application
@@ -212,8 +224,8 @@ MF_CONFIGURE_CPP_FLAGS    += -g
 #  += -Wno-unused-variable , To disable warnings for unused variables
 #  += -Wno-unused-label , To disable warnings for unused labels
 #  += -Wno-unused-function , To disable warnings for unused functions
-MF_CONFIGURE_C_FLAGS      += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion -Wstrict-prototypes
-MF_CONFIGURE_CPP_FLAGS    += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion -Wstrict-prototypes
+MF_CONFIGURE_C_FLAGS      += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+MF_CONFIGURE_CPP_FLAGS    += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
 
 #----------------------------
 # -Dynamic library export symbols
@@ -301,7 +313,7 @@ MF_CONFIGURE_BUSYBOX_TOOLS         ?= "../../tools/windows_tools/busybox"
 #============================
 MF_VERSION      := 1
 MF_PATCHLEVEL   := 0
-MF_SUBLEVEL     := 10
+MF_SUBLEVEL     := 12
 MF_EXTRAVERSION := 0
 MF_NAME         := "Universal Makefile"
 
@@ -326,6 +338,10 @@ endif
 # -Platform-related information
 #----------------------------
 ifeq ($(MF_PLATFORM_OS), WINDOWS)
+	# Dynamic and static library object file prefixes
+	#----------------------------
+	MF_PLATFORM_TARGET_LIB_PREFIX         :=
+
 	# Target file extension
 	#----------------------------
 	MF_PLATFORM_TARGET_EXECUTE_SUFFIX     := .exe
@@ -333,7 +349,7 @@ ifeq ($(MF_PLATFORM_OS), WINDOWS)
 	MF_PLATFORM_TARGET_LIB_DYNAMIC_SUFFIX := .dll
 
 	# Check if the path of the busybox tool has been defined
-ifndef MF_CONFIGURE_BUSYBOX_TOOLS
+ifeq ($(strip $(MF_CONFIGURE_BUSYBOX_TOOLS)),)
     $(error -> Note: The busybox tool is not defined!)
 endif
 	# In the makefile, the used tools are utilized. The busybox stores the paths of the tools.
@@ -343,6 +359,10 @@ endif
 	MF_PLATFORM_USING_TOOLS_FIND          := $(firstword $(MF_CONFIGURE_BUSYBOX_TOOLS)) find
 	MF_PLATFORM_USING_TOOLS_ECHO          := $(firstword $(MF_CONFIGURE_BUSYBOX_TOOLS)) echo
 else
+	# Dynamic and static library object file prefixes
+	#----------------------------
+	MF_PLATFORM_TARGET_LIB_PREFIX         := lib
+
 	# Target file extension
 	#----------------------------
 	MF_PLATFORM_TARGET_EXECUTE_SUFFIX     := 
@@ -403,29 +423,35 @@ endef
 #============================
 # -Parameter verification
 #============================
+
+# Check the compilation method
+ifeq ($(strip $(MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT)), YES)
+    $(error -> Note: You have set it to be launched only by the script. Please use the script for compilation.)
+endif
+
 # Check if the variable is defined
 
 # Verify the name of the target file
 ifeq ($(strip $(MF_CONFIGURE_TARGET_FILE_NAME)),)
-	$(error -> Note: The target file name cannot be empty!)
+    $(error -> Note: The target file name cannot be empty!)
 endif
 #----------------------------
 # -Use tools for verification
 #----------------------------
 ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_RM)),)
-	$(error -> Note: The rm tool is not defined!)
+    $(error -> Note: The rm tool is not defined!)
 endif
 ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_MKDIR)),)
-	$(error -> Note: The mkdir tool is not defined!)
+    $(error -> Note: The mkdir tool is not defined!)
 endif
 ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_CP)),)
-	$(error -> Note: The cp tool is not defined!)
+    $(error -> Note: The cp tool is not defined!)
 endif
 ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_FIND)),)
-	$(error -> Note: The find tool is not defined!)
+    $(error -> Note: The find tool is not defined!)
 endif
 ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_ECHO)),)
-	$(error -> Note: The echo tool is not defined!)
+    $(error -> Note: The echo tool is not defined!)
 endif
 
 # Verification of the output directory of the target file
@@ -477,8 +503,8 @@ MF_SOURCES_DIRECTORY_PATHS        := $(filter-out $(MF_CONFIGURE_EXCLUDED_DIRECT
 
 # -Add all the header file folders in the source code directory -l(-I)
 MF_SOURCES_HEADER_FILE_PATHS      := $(addprefix -I, $(MF_SOURCES_DIRECTORY_PATHS))
-# -Header file directory: Except for the specified source code directory and its subdirectories, it is necessary to manually add it to the variable MF_CONFIGURE_OTHER_INCLUDE_PATHS.
-MF_SOURCES_ALL_HEADER_FILE_PATHS  := $(MF_SOURCES_HEADER_FILE_PATHS) $(addprefix -I, $(basename $(MF_CONFIGURE_OTHER_INCLUDE_PATHS)))
+# -Header file directory: Except for the specified source code directory and its subdirectories, it is necessary to manually add it to the variable MF_CONFIGURE_OTHER_HEADER_FILE_PATHS.
+MF_SOURCES_ALL_HEADER_FILE_PATHS  := $(MF_SOURCES_HEADER_FILE_PATHS) $(addprefix -I, $(basename $(MF_CONFIGURE_OTHER_HEADER_FILE_PATHS)))
 
 # -The C source files (.c) found in the source code directory path
 MF_SOURCES_C_ALL_FILES            := $(foreach dir, $(MF_SOURCES_DIRECTORY_PATHS), $(wildcard $(dir)/*.c))
@@ -544,15 +570,15 @@ MF_PARAM_USING_LIBRARY_FLAGS      := $(MF_CONFIGURE_USING_STD_LIBRARY_FLAGS) $(M
 # -Redefine the name
 #----------------------------
 MF_PARAM_TARGET_EXECUTE           := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_CONFIGURE_TARGET_FILE_NAME)$(MF_PLATFORM_TARGET_EXECUTE_SUFFIX)
-MF_PARAM_TARGET_LIB_STATIC        := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/lib$(MF_CONFIGURE_TARGET_FILE_NAME)$(MF_PLATFORM_TARGET_LIB_STATIC_SUFFIX)
-MF_PARAM_TARGET_LIB_DYNAMIC       := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/lib$(MF_CONFIGURE_TARGET_FILE_NAME)$(MF_PLATFORM_TARGET_LIB_DYNAMIC_SUFFIX)
+MF_PARAM_TARGET_LIB_STATIC        := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_PLATFORM_TARGET_LIB_PREFIX)$(MF_CONFIGURE_TARGET_FILE_NAME)$(MF_PLATFORM_TARGET_LIB_STATIC_SUFFIX)
+MF_PARAM_TARGET_LIB_DYNAMIC       := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_PLATFORM_TARGET_LIB_PREFIX)$(MF_CONFIGURE_TARGET_FILE_NAME)$(MF_PLATFORM_TARGET_LIB_DYNAMIC_SUFFIX)
 # This is merely used to set the target name.
-MF_PARAM_TARGET_LIB_STATICDYNAMIC := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/lib$(MF_CONFIGURE_TARGET_FILE_NAME)_a_so
+MF_PARAM_TARGET_LIB_STATICDYNAMIC := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_PLATFORM_TARGET_LIB_PREFIX)$(MF_CONFIGURE_TARGET_FILE_NAME)_a_so
 
 # debug target, (MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG = RELEASE_AND_DEBUG)
 MF_PARAM_TARGET_EXECUTE_DEBUG     := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_CONFIGURE_TARGET_FILE_NAME)_debug$(MF_PLATFORM_TARGET_EXECUTE_SUFFIX)
-MF_PARAM_TARGET_LIB_STATIC_DEBUG  := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/lib$(MF_CONFIGURE_TARGET_FILE_NAME)_debug$(MF_PLATFORM_TARGET_LIB_STATIC_SUFFIX)
-MF_PARAM_TARGET_LIB_DYNAMIC_DEBUG := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/lib$(MF_CONFIGURE_TARGET_FILE_NAME)_debug$(MF_PLATFORM_TARGET_LIB_DYNAMIC_SUFFIX)
+MF_PARAM_TARGET_LIB_STATIC_DEBUG  := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_PLATFORM_TARGET_LIB_PREFIX)$(MF_CONFIGURE_TARGET_FILE_NAME)_debug$(MF_PLATFORM_TARGET_LIB_STATIC_SUFFIX)
+MF_PARAM_TARGET_LIB_DYNAMIC_DEBUG := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_PLATFORM_TARGET_LIB_PREFIX)$(MF_CONFIGURE_TARGET_FILE_NAME)_debug$(MF_PLATFORM_TARGET_LIB_DYNAMIC_SUFFIX)
 
 MF_PARAM_TARGET                    = $(MF_PARAM_TARGET_EXECUTE)
 
@@ -580,7 +606,7 @@ endif
 # -Check if there are any target files
 #----------------------------
 ifeq ($(strip $(MF_PARAM_CC_OBJECTS)),)
-	$(error -> Note: The target file was not found. Please check the source code directory.)
+    $(error -> Note: The target file was not found. Please check the source code directory.)
 endif
 
 #============================
@@ -593,9 +619,9 @@ $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.i : %.c
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(MF_CONFIGURE_USING_FORMATTEND_LOG), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "[PREPROCESS] $< -> $@"
-	@$(MF_COMPILE_TOOL_CC) -E "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	@$(MF_PARAM_COMPILE_TOOL_CC) -E "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 else
-	$(MF_COMPILE_TOOL_CC) -E "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	$(MF_PARAM_COMPILE_TOOL_CC) -E "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 endif
 
 #----------------------------
@@ -605,9 +631,9 @@ $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.s : %.c
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(MF_CONFIGURE_USING_FORMATTEND_LOG), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "[ASSEMBLY] $< -> $@"
-	@$(MF_COMPILE_TOOL_CC) -S "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	@$(MF_PARAM_COMPILE_TOOL_CC) -S "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 else
-	$(MF_COMPILE_TOOL_CC) -S "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	$(MF_PARAM_COMPILE_TOOL_CC) -S "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 endif
 
 #----------------------------
@@ -617,9 +643,9 @@ $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o : %.c
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(MF_CONFIGURE_USING_FORMATTEND_LOG), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "[CC] $<"
-	@$(MF_COMPILE_TOOL_CC) $(MF_CONFIGURE_C_OBJECTS_FLAGS) -c "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	@$(MF_PARAM_COMPILE_TOOL_CC) $(MF_CONFIGURE_C_OBJECTS_FLAGS) -c "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 else
-	$(MF_COMPILE_TOOL_CC) $(MF_CONFIGURE_C_OBJECTS_FLAGS) -c "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	$(MF_PARAM_COMPILE_TOOL_CC) $(MF_CONFIGURE_C_OBJECTS_FLAGS) -c "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 endif
 
 #----------------------------
