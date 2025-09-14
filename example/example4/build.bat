@@ -36,7 +36,7 @@
 ::----------------------------
 :: -::Configuration compilation method::
 ::  Parameter="build.bat"
-set MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT="build.bat"
+set MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT=build.bat
 
 ::----------------------------
 :: -Configuration files and paths
@@ -46,7 +46,7 @@ set MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT="build.bat"
 ::  Example: 
 ::  -  = main
 ::  -  = test
-set MF_CONFIGURE_TARGET_FILE_NAME="build_test"
+set MF_CONFIGURE_TARGET_FILE_NAME=test
 
 :: -:: Configure the target file directory generation ::
 ::  The default is the folder where the Makefile is located (./build)
@@ -54,7 +54,7 @@ set MF_CONFIGURE_TARGET_FILE_NAME="build_test"
 ::  -  = "./build"
 ::  -  = "./output"
 ::  -  = "."
-set MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH="./build"
+set MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH="."
 
 :: -:: Configuration for the output directory of intermediate files during compilation ::
 ::  The default is the source code folder (./build/output)
@@ -72,7 +72,7 @@ set MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH="./build/output"
 ::  -  = "."
 ::  -  = "./src" "../timer"
 ::  -  = "./test"
-set MF_CONFIGURE_SOURCE_CODE_DIRECTORYS="./src"
+set MF_CONFIGURE_SOURCE_CODE_DIRECTORYS="."
 
 :: -:: The configuration requires excluding all source file directories (including all subdirectories) in this folder::
 ::  Add multiple entries separated by spaces. For example: (./src ./lib)
@@ -154,7 +154,7 @@ set MF_CONFIGURE_ADD_USER_DEFINE=
 :: Parameter = [RELEASE] Remove the symbol table from the executable file. The symbol table does not affect the program's operation and can reduce the file size.
 :: Parameter = [DEBUG] Keep the symbol table in the executable file. Set to NO when using gdb for debugging.
 :: Parameter = [RELEASE_AND_DEBUG] Keep both the RELEASE and DEBUG executable files.
-set MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG=RELEASE_AND_DEBUG
+set MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG=DEBUG
 
 :: -::Compilation output file type::
 :: Parameter = [EXECUTE]                    Generates an executable program
@@ -230,7 +230,7 @@ set MF_CONFIGURE_COMPILE_PATH_PREFIX=
 ::  Example:
 ::  -  = "./tools/windows_tools/busybox"
 ::  -  = "./tools/busybox"
-::set MF_CONFIGURE_BUSYBOX_TOOLS="./tools/windows_tools/busybox"
+set MF_CONFIGURE_BUSYBOX_TOOLS="../../tools/windows_tools/busybox"
 
 :: =============================================
 :: command

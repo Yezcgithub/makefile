@@ -38,7 +38,7 @@
 # -#Configuration compilation method#
 #  Parameter = [YES] It can only be compiled by a script. When using make for compilation, it will prompt to use the script for execution (the script must set this variable and the value must not be "YES")
 #  Parameter = [NO]  You can directly use "make" to compile.
-MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT        ?= NO
+MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT        ?= YES
 
 #============================
 # -Makeflie Configuration
@@ -51,7 +51,7 @@ MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT        ?= NO
 #  Example: 
 #  -  ?= main
 #  -  ?= test
-MF_CONFIGURE_TARGET_FILE_NAME              ?= calculator
+MF_CONFIGURE_TARGET_FILE_NAME              ?= main
 
 # -# Configure the target file directory generation #
 #  The default is the folder where the Makefile is located (./build)
@@ -59,7 +59,7 @@ MF_CONFIGURE_TARGET_FILE_NAME              ?= calculator
 #  -  ?= ./build
 #  -  ?= ./output
 #  -  ?= .
-MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH       ?= .
+MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH       ?= ./build
 
 # -# Configuration for the output directory of intermediate files during compilation #
 #  The default is the source code folder (./build/output)
@@ -159,14 +159,14 @@ MF_CONFIGURE_ADD_USER_DEFINE               ?=
 # Parameter = [RELEASE] Remove the symbol table from the executable file. The symbol table does not affect the program's operation and can reduce the file size.
 # Parameter = [DEBUG] Keep the symbol table in the executable file. Set to NO when using gdb for debugging.
 # Parameter = [RELEASE_AND_DEBUG] Keep both the RELEASE and DEBUG executable files.
-MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG       ?= DEBUG
+MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG       ?= RELEASE_AND_DEBUG
 
 # -#Compilation output file type#
 # Parameter = [EXECUTE]                    Generates an executable program
 # Parameter = [LIBRARY_DYNAMIC]            Generates (.so) dynamic library file
 # Parameter = [LIBRARY_STATIC]             Generates (.a) static library file
 # Parameter = [LIBRARY_STATIC_AND_DYNAMIC] Generates (.a and .so) dynamic-static library file
-MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE       ?= LIBRARY_STATIC
+MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE       ?= EXECUTE
 
 # -#Compile the original file type#
 # Parameter = [CPP_TYPE] Compiles both C and CPP files
@@ -302,7 +302,7 @@ MF_CONFIGURE_PLATFORM_OS          ?= $(OS)
 #  Example:
 #  -  ?= "./tools/windows_tools/busybox"
 #  -  ?= "./tools/busybox"
-MF_CONFIGURE_BUSYBOX_TOOLS         ?= "../../../tools/windows_tools/busybox"
+MF_CONFIGURE_BUSYBOX_TOOLS         ?= "./tools/windows_tools/busybox"
 
 # Configuration completed
 # - The following code will be executed based on the configuration settings
