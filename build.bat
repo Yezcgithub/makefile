@@ -32,6 +32,13 @@
 :: OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ::----------------------------
+:: -Configuration related to the script
+::----------------------------
+:: -::Configuration compilation method::
+::  Parameter="build.bat"
+set MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT=build.bat
+
+::----------------------------
 :: -Configuration files and paths
 ::----------------------------
 :: -:: Configure to generate the target file name ::

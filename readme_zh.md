@@ -34,7 +34,16 @@
 
 ## 四、配置说明
 
-### 1、配置文件和路径
+### 1、与脚本相关的配置
+
+```makefile
+# -#配置编译方式#
+#  参数 = [YES]  只能由脚本来编译, 使用make将会提示使用脚本来执行(脚本中必须设置这个变量并且值不为YES)
+#  参数 = [NO]   可以直接使用make来编译
+MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT        ?= NO
+```
+
+### 2、配置文件和路径
 
 ```makefile
 # -#配置生成目标文件名称#
@@ -108,7 +117,7 @@ MF_CONFIGURE_EXCLUDED_FILES                ?=
 MF_CONFIGURE_OTHER_INCLUDE_PATHS           ?=
 ```
 
-### 2、添加参数配置
+### 3、添加参数配置
 
 ```makefile
 # -#在程序中用到的第3方库,编译时需要添加#
@@ -145,7 +154,7 @@ MF_CONFIGURE_USING_LIBRARY_FLAGS           ?=
 MF_CONFIGURE_ADD_USER_DEFINE               ?=
 ```
 
-### 3、设置文件编译选项
+### 4、设置文件编译选项
 
 ```makefile
 # -#编译后的目标文件输出类型#
@@ -184,7 +193,7 @@ MF_CONFIGURE_DELETING_INTERMEDIATE_FILES   ?= NO
 MF_CONFIGURE_USING_FORMATTEND_LOG          ?= YES
 ```
 
-### 4、调试选项
+### 5、调试选项
 
 ```makefile
 #  += -g        在编译的时候,产生调试信息
@@ -196,7 +205,7 @@ MF_CONFIGURE_C_FLAGS      += -g
 MF_CONFIGURE_CPP_FLAGS    += -g
 ```
 
-### 5、错误与告警选项
+### 6、错误与告警选项
 
 ```makefile
 # -基本警告控制
@@ -225,7 +234,7 @@ MF_CONFIGURE_CPP_FLAGS    += -Wall -Werror -Wfatal-errors -Wunused-function -Wun
 
 ```
 
-### 6、其他参数配置
+### 7、其他参数配置
 
 ```makefile
 #----------------------------

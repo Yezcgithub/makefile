@@ -32,7 +32,16 @@ The path of the project on Gitee   : https://gitee.com/yezc/makefile
 
 ## 4、Configuration Instructions
 
-### 1、Configuration files and paths
+### 1、Configuration related to the script
+
+```makefile
+# -#Configuration compilation method#
+#  Parameter = [YES] It can only be compiled by a script. When using make for compilation, it will prompt to use the script for execution (the script must set this variable and the value must not be "YES")
+#  Parameter = [NO]  You can directly use "make" to compile.
+MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT        ?= NO
+```
+
+### 2、Configuration files and paths
 
 ```makefile
 # -# Configure to generate the target file name #
@@ -106,7 +115,7 @@ MF_CONFIGURE_EXCLUDED_FILES                ?=
 MF_CONFIGURE_OTHER_INCLUDE_PATHS           ?=
 ```
 
-### 2、Add parameter configuration
+### 3、Add parameter configuration
 
 ```makefile
 # -# The third-party libraries used in the program, need to be added during compilation#
@@ -143,7 +152,7 @@ MF_CONFIGURE_USING_LIBRARY_FLAGS           ?=
 MF_CONFIGURE_ADD_USER_DEFINE               ?=
 ```
 
-### 3、Set file compilation options
+### 4、Set file compilation options
 
 ```makefile
 # -#Output type of the compiled target file#
@@ -182,7 +191,7 @@ MF_CONFIGURE_DELETING_INTERMEDIATE_FILES   ?= NO
 MF_CONFIGURE_USING_FORMATTEND_LOG          ?= YES
 ```
 
-### 4、Debugging options
+### 5、Debugging options
 
 ```makefile
 #  += -g        During compilation, generate debugging information
@@ -194,7 +203,7 @@ MF_CONFIGURE_C_FLAGS      += -g
 MF_CONFIGURE_CPP_FLAGS    += -g
 ```
 
-### 5、Error and Alert Options
+### 6、Error and Alert Options
 
 ```makefile
 #  += -w , To disable all compilation warnings
@@ -221,7 +230,7 @@ MF_CONFIGURE_C_FLAGS      += -Wall -Werror -Wfatal-errors -Wunused-function -Wun
 MF_CONFIGURE_CPP_FLAGS    += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion -Wstrict-prototypes
 ```
 
-### 6、Other parameter settings
+### 7、Other parameter settings
 
 ```makefile
 

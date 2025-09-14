@@ -33,6 +33,17 @@
 # -Makeflie Configuration
 #============================
 #----------------------------
+# -Configuration related to the script
+#----------------------------
+# -#Configuration compilation method#
+#  Parameter = [YES] It can only be compiled by a script. When using make for compilation, it will prompt to use the script for execution (the script must set this variable and the value must not be "YES")
+#  Parameter = [NO]  You can directly use "make" to compile.
+MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT        ?= NO
+
+#============================
+# -Makeflie Configuration
+#============================
+#----------------------------
 # -Configuration files and paths
 #----------------------------
 # -# Configure to generate the target file name #
@@ -334,7 +345,7 @@ ifeq ($(MF_PLATFORM_OS), WINDOWS)
 	MF_PLATFORM_TARGET_LIB_DYNAMIC_SUFFIX := .dll
 
 	# Check if the path of the busybox tool has been defined
-ifndef MF_CONFIGURE_BUSYBOX_TOOLS
+ifeq ($(strip $(MF_CONFIGURE_BUSYBOX_TOOLS)),)
     $(error -> Note: The busybox tool is not defined!)
 endif
 	# In the makefile, the used tools are utilized. The busybox stores the paths of the tools.
@@ -404,29 +415,35 @@ endef
 #============================
 # -Parameter verification
 #============================
+
+# Check the compilation method
+ifeq ($(strip $(MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT)), YES)
+    $(error -> Note: You have set it to be launched only by the script. Please use the script for compilation.)
+endif
+
 # Check if the variable is defined
 
 # Verify the name of the target file
 ifeq ($(strip $(MF_CONFIGURE_TARGET_FILE_NAME)),)
-	$(error -> Note: The target file name cannot be empty!)
+    $(error -> Note: The target file name cannot be empty!)
 endif
 #----------------------------
 # -Use tools for verification
 #----------------------------
 ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_RM)),)
-	$(error -> Note: The rm tool is not defined!)
+    $(error -> Note: The rm tool is not defined!)
 endif
 ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_MKDIR)),)
-	$(error -> Note: The mkdir tool is not defined!)
+    $(error -> Note: The mkdir tool is not defined!)
 endif
 ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_CP)),)
-	$(error -> Note: The cp tool is not defined!)
+    $(error -> Note: The cp tool is not defined!)
 endif
 ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_FIND)),)
-	$(error -> Note: The find tool is not defined!)
+    $(error -> Note: The find tool is not defined!)
 endif
 ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_ECHO)),)
-	$(error -> Note: The echo tool is not defined!)
+    $(error -> Note: The echo tool is not defined!)
 endif
 
 # Verification of the output directory of the target file
@@ -581,7 +598,7 @@ endif
 # -Check if there are any target files
 #----------------------------
 ifeq ($(strip $(MF_PARAM_CC_OBJECTS)),)
-	$(error -> Note: The target file was not found. Please check the source code directory.)
+    $(error -> Note: The target file was not found. Please check the source code directory.)
 endif
 
 #============================

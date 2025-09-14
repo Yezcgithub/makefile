@@ -31,6 +31,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #----------------------------
+# -Configuration related to the script
+#----------------------------
+# -#Configuration compilation method#
+#  Parameter="build.sh"
+export MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT="build.sh"
+
+#----------------------------
 # -Configuration files and paths
 #----------------------------
 # -# Configure to generate the target file name #
