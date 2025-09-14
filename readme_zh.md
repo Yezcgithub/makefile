@@ -5,11 +5,11 @@
 
 ## 一、背景
 
-​		很高兴你能看到这个开源项目，希望这个项目能帮到你。
-​		本人是一个c\c++开发工作者，每次在开发一个新的项目都要整理重写一个makefile文件，这样让我感到非常麻烦。同时我也使用过其他的管理工具，如automake、cmake、scons。嗯... , 并不是说他们不好，只是我觉得没有必要。我还是在想把makefile这么写的更加的通用，更加的人性化一点，毕竟写起来的话它们的依赖关系是比较复杂的。更加上我的开发环境有可能在windows下开发，虽然在windows下写c\c++代码有很好的软件工具支持。既然要做，那做好它，跨平台必须支持。期间看了make官网的文档，参考了Linux kernel的makefile现实等，最终完成了这个项目。
+​	很高兴你能看到这个开源项目，希望这个项目能帮到你。
+​	这是一个可直接用于企业开发使用的项目
 
-项目在github的路径 : https://github.com/Yezcgithub/makefile
-项目在gitee的路径   : https://gitee.com/yezc/makefile
+​	项目在github的路径 : https://github.com/Yezcgithub/makefile
+​	项目在gitee的路径   : https://gitee.com/yezc/makefile
 
 ## 二、功能
 
@@ -20,17 +20,18 @@
 5. 支持可配置生成 release、debug 以及同时生成 release 和 debug 版本
 6. 支持可配置生成的目标文件及生成的中间文件的保存位置
 7. 支持生成预处理文件和生成汇编文件命令
+8. 支持在脚本中配置参数
 
 ## 三、优点
 
 1. 简洁，核心只有一个Makefile文件
 2. 跨平台，它可以自动识别所在平台，不需要配置就可以直接使用
    - 在Linux中直接拷贝Makefile文件到工程中就可以直接使用
-   - 在Windows中需要busybox的支持，你可以在 "./tools/windows_tools" 中找到它，也可以在busybox官网中下载最新版本 https://frippery.org/busybox/，在Windows使用Makefile该文件时，在拷贝Makefile文件的同时把 tools 文件夹一起拷到你的工程中即可
+   - 在Windows中需要busybox的支持，你可以在 "./tools/windows_tools" 中找到它，也可以在busybox官网中下载最新版本 https://frippery.org/busybox/ ， 在Windows使用Makefile该文件时，在拷贝Makefile文件的同时把 tools 文件夹一起拷到你的工程中即可
 2. 配置方便，在Makefile文件中你只要关心带有前缀 "MF_CONFIGURE_" 的变量，并且增加了大量的说明及示例，这样能非常方便的对每个工程个性化管理的需求
 3. 结合脚本使用，你可以不用修改Makefile文件，在脚本中直接配置你的个性化需求，可以在工程中查看 build.sh 脚本文件(Linux使用的) 和  build.bat 脚本文件(Windows使用的)
 4. 健壮性，在Makefile文件中增加了很多的校验，它能增加在执行make时不容易出错，能够提前告知你配置的问题设置
-5. 便于学习，如果近期你想了解或学习Makefile文件的知识，该项目是一个非常好的学习资料。在该项目中使用到了大部分的Makefile知识点，并且拥有大量的注释说明。在 "./doc" 文件夹中保存了make.pdf文件，这个也是你学习之路的不可或缺的的资料文件。当然也可以到make官网上下载最新的文档 https://www.gnu.org/software/make/
+5. 便于学习，如果近期你想了解或学习Makefile文件的知识，该项目是一个非常好的学习资料。在该项目中使用到了大部分的Makefile知识点，并且拥有大量的注释说明。在 "./doc" 文件夹中保存了make.pdf文件，这个也是你学习之路的不可或缺的的资料文件。当然也可以到make官网上下载最新的文档 https://www.gnu.org/software/make/ 
 
 ## 四、配置说明
 

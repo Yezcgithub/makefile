@@ -4,10 +4,11 @@
 
 ## 1、Project Overview
 
-​		I am a C/C++ developer. Every time I start a new project, I have to re-organize and rewrite the makefile. This is very troublesome for me. At the same time, I have also used other management tools such as Automake, CMake, and Scons. Well... They are not bad, but I think they are unnecessary. I still want to make the makefile more universal and user-friendly. After all, their dependency relationships are quite complex. Moreover, my development environment may be on Windows. Although there are excellent software tools for writing C/C++ code on Windows, I still decided to do it. I want to do it well and ensure cross-platform support. During this process, I referred to the documentation of the Make website and the makefile of the Linux kernel. 
+​	I'm very glad that you can see this open-source project. I hope this project can be of help to you.
+​	This is a project that can be directly used for enterprise development.
 
-The path of the project on GitHub : https://github.com/Yezcgithub/makefile
-The path of the project on Gitee   : https://gitee.com/yezc/makefile
+​	The path of the project on GitHub : https://github.com/Yezcgithub/makefile
+​	The path of the project on Gitee   : https://gitee.com/yezc/makefile
 
 ## 2、Project Features
 
@@ -18,6 +19,7 @@ The path of the project on Gitee   : https://gitee.com/yezc/makefile
 5. Support configurable generation of release, debug, and simultaneous generation of release and debug versions
 6. Support configurable saving locations for generated target files and generated intermediate files
 7. Support generation of preprocessor files and assembly file commands
+8. Support the configuration of parameters in the script
 
 ## 3、Advantages
 
