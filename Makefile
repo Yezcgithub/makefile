@@ -38,7 +38,7 @@
 # -#Configuration compilation method#
 #  Parameter = [YES] It can only be compiled by a script. When using make for compilation, it will prompt to use the script for execution (the script must set this variable and the value must not be "YES")
 #  Parameter = [NO]  You can directly use "make" to compile.
-MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT        ?= NO
+MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT          ?= NO
 
 #============================
 # -Makeflie Configuration
@@ -51,7 +51,7 @@ MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT        ?= NO
 #  Example: 
 #  -  ?= main
 #  -  ?= test
-MF_CONFIGURE_TARGET_FILE_NAME              ?= main
+MF_CONFIGURE_TARGET_FILE_NAME                ?= main
 
 # -# Configure the target file directory generation #
 #  The default is the folder where the Makefile is located (./build)
@@ -59,7 +59,7 @@ MF_CONFIGURE_TARGET_FILE_NAME              ?= main
 #  -  ?= ./build
 #  -  ?= ./output
 #  -  ?= .
-MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH       ?= ./build
+MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH         ?= ./build
 
 # -# Configuration for the output directory of intermediate files during compilation #
 #  The default is the source code folder (./build/output)
@@ -67,7 +67,7 @@ MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH       ?= ./build
 #  -  ?= ./build/output
 #  -  ?= ./output
 #  -  ?= .
-MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH ?= ./build/output
+MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH   ?= ./build/output
 
 # -# The root directory (including subfolders) for compiling the source code #
 # Add multiple root directories separated by spaces, for example: (./src ./lib)
@@ -77,7 +77,7 @@ MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH ?= ./build/output
 #  -  ?= .
 #  -  ?= ./src ../timer
 #  -  += ./test
-MF_CONFIGURE_SOURCE_CODE_DIRECTORYS        ?= .
+MF_CONFIGURE_SOURCE_CODE_DIRECTORYS          ?= .
 
 # -# The configuration requires excluding all source file directories (including all subdirectories) in this folder#
 #  Add multiple entries separated by spaces. For example: (./src ./lib)
@@ -87,7 +87,7 @@ MF_CONFIGURE_SOURCE_CODE_DIRECTORYS        ?= .
 #  -  ?= ./lib
 #  -  ?= ./clib ./lib
 #  -  += ./libtest
-MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION ?=
+MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION   ?=
 
 # -# The configuration requires the exclusion of all source file directories in this folder#
 #  Add multiple directories separated by spaces. For example: = . ./lib ./lib/test ./lib/timer
@@ -97,7 +97,7 @@ MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION ?=
 #  -  ?= . ./lib
 #  -  ?= . ./lib ./lib/test ./lib/timer
 #  -  += ./libtest
-MF_CONFIGURE_EXCLUDED_DIRECTORYS           ?=
+MF_CONFIGURE_EXCLUDED_DIRECTORYS             ?=
 
 # -# Configuration for excluding files #
 # Add multiple files separated by spaces. For example: = ./src/main.c ./lib/test.c
@@ -106,15 +106,16 @@ MF_CONFIGURE_EXCLUDED_DIRECTORYS           ?=
 #  -  ?= ./test.c
 #  -  ?= ./src/main.c ./lib/test.c ./lib/timer/test.c
 #  -  += ./src/test.c
-MF_CONFIGURE_EXCLUDED_FILES                ?=
+MF_CONFIGURE_EXCLUDED_FILES                  ?=
 
-# -# Add header file paths other than the root directory and its subfolders#
+# -# Add header file path #
+#  The area specified by the variable MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE needs to be examined.
 #  Add multiple paths separated by spaces. For example: = ../ .. /inc /lib/inc
 #  Example: 
 #  -  ?= .
 #  -  ?= ../src/inc ./lib
 #  -  += ../lib/inc
-MF_CONFIGURE_OTHER_HEADER_FILE_PATHS       ?=
+MF_CONFIGURE_HEADER_FILE_PATHS               ?=
 
 #----------------------------
 # -Add configuration
@@ -131,14 +132,14 @@ MF_CONFIGURE_OTHER_HEADER_FILE_PATHS       ?=
 #  Example: 
 #  -  ?= -lpthread -lrt -lm -ldl
 #  -  += -ldl
-MF_CONFIGURE_USING_STD_LIBRARY_FLAGS       ?= 
+MF_CONFIGURE_USING_STD_LIBRARY_FLAGS         ?= 
 
 # -#The libraries written by oneself or those from third parties#
 #  Example: 
 #  -  ?= -L./lib/timer -ltimer -L./lib/test -ltest
 #  -  += -L./lib/media -lmedia
 #  -  += -L./lib -ltest -ltest1 -ltest2
-MF_CONFIGURE_USING_LIBRARY_FLAGS           ?=
+MF_CONFIGURE_USING_LIBRARY_FLAGS             ?=
 
 # -# Add User Macro Definitions #
 #  These macros can be used in the application
@@ -150,45 +151,52 @@ MF_CONFIGURE_USING_LIBRARY_FLAGS           ?=
 #  -  += __YECC=hello
 #  -  += __YECC_NUM=1
 #  -  += APP_VERSION=1.0.0
-MF_CONFIGURE_ADD_USER_DEFINE               ?=
+MF_CONFIGURE_ADD_USER_DEFINE                 ?=
 
 #----------------------------
 # -Compilation configuration
 #----------------------------
+# -#Configure the header file path with the include range# 
+#  Parameter = [ONLY_CONFIGURE_PATHS]    Only the paths that are configured through the MF_CONFIGURE_HEADER_FILE_PATHS variable.
+#  Parameter = [BUILD_SOURCE_CODE_PATHS] It includes the source file directories that were not excluded in addition to ONLY_CONFIGURE_PATHS.(Source code compilation path)
+#  Parameter = [ALL_SOURCE_CODE_PATHS]   It includes all the source file directories in addition to ONLY_CONFIGURE_PATHS.
+#  Parameter = [ALL_PATHS]               It includes the excluded file directories in addition to ALL_SOURCE_CODE_PATHS.
+MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE  ?= ALL_SOURCE_CODE_PATHS
+
 # -#Output type of the compiled target file#
 # Parameter = [RELEASE] Remove the symbol table from the executable file. The symbol table does not affect the program's operation and can reduce the file size.
 # Parameter = [DEBUG] Keep the symbol table in the executable file. Set to NO when using gdb for debugging.
 # Parameter = [RELEASE_AND_DEBUG] Keep both the RELEASE and DEBUG executable files.
-MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG       ?= RELEASE_AND_DEBUG
+MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG         ?= RELEASE_AND_DEBUG
 
 # -#Compilation output file type#
 # Parameter = [EXECUTE]                    Generates an executable program
 # Parameter = [LIBRARY_DYNAMIC]            Generates (.so) dynamic library file
 # Parameter = [LIBRARY_STATIC]             Generates (.a) static library file
 # Parameter = [LIBRARY_STATIC_AND_DYNAMIC] Generates (.a and .so) dynamic-static library file
-MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE       ?= EXECUTE
+MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE         ?= EXECUTE
 
 # -#Compile the original file type#
 # Parameter = [CPP_TYPE] Compiles both C and CPP files
 # Parameter = [C_TYPE]   Compiles only C files
-MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE    ?= CPP_TYPE
+MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE      ?= CPP_TYPE
 
 # -#Whether to use static compilation (only applicable for generating executable programs)#
 # Parameter = [YES] Use static compilation
 # Parameter Explanation: During compilation, all dependent files will be included. It has less dependence on the running environment and is highly compatible; however, the generated program is relatively large.
 # Parameter = [NO] Use dynamic compilation
 # Parameter Explanation: After compilation, the program size is smaller and it relies on dynamic libraries. It cannot run independently.
-MF_CONFIGURE_USING_STATIC_COMPILATION      ?= NO
+MF_CONFIGURE_USING_STATIC_COMPILATION        ?= NO
 
 # -#Delete intermediate files after compilation(.d, .o, .i, .ii, .s)#
 # Parameter = [YES] Delete intermediate files. Each compilation will be a full compilation.
 # Parameter = [NO] Keep intermediate files.
-MF_CONFIGURE_DELETING_INTERMEDIATE_FILES   ?= NO
+MF_CONFIGURE_DELETING_INTERMEDIATE_FILES     ?= NO
 
 # -# The console log during the compilation process is displayed in a formatted manner#
 # Parameter = [YES] Displays the formatted log, allowing the filenames being compiled to be printed neatly
 # Parameter = [NO]  Prints the default log
-MF_CONFIGURE_USING_FORMATTEND_LOG          ?= YES
+MF_CONFIGURE_USING_FORMATTEND_LOG            ?= YES
 
 #----------------------------
 # -Debugging options
@@ -385,15 +393,9 @@ endif
 # - Recursively search for all subdirectories within the specified directory
 #   Parameter $1: The root directory path to be searched
 #----------------------------
-ifeq ($(MF_PLATFORM_OS), WINDOWS)
 define function_find_subdirectories
 	$(shell $(MF_PLATFORM_USING_TOOLS_FIND) $(1) -type d)
 endef
-else
-define function_find_subdirectories
-	$(shell $(MF_PLATFORM_USING_TOOLS_FIND) $(1) -type d)
-endef
-endif
 
 #----------------------------
 # -Function for cleaning intermediate files
@@ -501,11 +503,6 @@ MF_SOURCES_EXCLUDED_DIRECTORYS    := $(if $(strip $(MF_CONFIGURE_EXCLUDED_DIRECT
 # -Exclude the specified directory from the source code directory path
 MF_SOURCES_DIRECTORY_PATHS        := $(filter-out $(MF_CONFIGURE_EXCLUDED_DIRECTORYS) $(MF_SOURCES_EXCLUDED_DIRECTORYS), $(MF_SOURCES_ALL_DIRECTORY_PATHS))
 
-# -Add all the header file folders in the source code directory -l(-I)
-MF_SOURCES_HEADER_FILE_PATHS      := $(addprefix -I, $(MF_SOURCES_DIRECTORY_PATHS))
-# -Header file directory: Except for the specified source code directory and its subdirectories, it is necessary to manually add it to the variable MF_CONFIGURE_OTHER_HEADER_FILE_PATHS.
-MF_SOURCES_ALL_HEADER_FILE_PATHS  := $(MF_SOURCES_HEADER_FILE_PATHS) $(addprefix -I, $(basename $(MF_CONFIGURE_OTHER_HEADER_FILE_PATHS)))
-
 # -The C source files (.c) found in the source code directory path
 MF_SOURCES_C_ALL_FILES            := $(foreach dir, $(MF_SOURCES_DIRECTORY_PATHS), $(wildcard $(dir)/*.c))
 MF_SOURCES_C_FILES                := $(filter-out $(MF_CONFIGURE_EXCLUDED_FILES), $(MF_SOURCES_C_ALL_FILES))
@@ -550,6 +547,30 @@ MF_PARAM_CPP_DEPENDENTS           := $(MF_SOURCES_CPP_DEPENDENT_FILES)
 #----------------------------
 MF_PARAM_PREPROCESSED             := $(MF_SOURCES_C_PREPROCESSED_FILES) $(MF_SOURCES_CPP_PREPROCESSED_FILES)
 MF_PARAM_ASSEMBLY                 := $(MF_SOURCES_C_ASSEMBLY_FILES) $(MF_SOURCES_CPP_ASSEMBLY_FILES)
+
+#----------------------------
+# -Add header file directory
+#----------------------------
+# = ONLY_CONFIGURE_PATHS, Only the paths that are configured through the MF_CONFIGURE_HEADER_FILE_PATHS variable.
+ifeq ($(firstword $(MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE)), ONLY_CONFIGURE_PATHS)
+	MF_SOURCES_HEADER_FILE_PATHS  :=
+else
+# = BUILD_SOURCE_CODE_PATHS, It includes the source file directories that were not excluded in addition to ONLY_CONFIGURE_PATHS.(Source code compilation path)
+ifeq ($(firstword $(MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE)), BUILD_SOURCE_CODE_PATHS)
+	MF_SOURCES_HEADER_FILE_PATHS  := $(addprefix -I, $(MF_SOURCES_DIRECTORY_PATHS))
+else
+# = ALL_PATHS, It includes the excluded file directories in addition to ALL_SOURCE_CODE_PATHS.
+ifeq ($(firstword $(MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE)), ALL_PATHS)
+	MF_SOURCES_HEADER_FILE_PATHS  := $(addprefix -I, $(MF_SOURCES_ALL_DIRECTORY_PATHS) $(MF_CONFIGURE_EXCLUDED_DIRECTORYS) $(MF_SOURCES_EXCLUDED_DIRECTORYS))
+# = ALL_SOURCE_CODE_PATHS, It includes all the source file directories in addition to ONLY_CONFIGURE_PATHS.
+else
+	MF_SOURCES_HEADER_FILE_PATHS  := $(addprefix -I, $(MF_SOURCES_ALL_DIRECTORY_PATHS))
+endif
+endif
+endif
+
+# -Header file directory: Except for the specified source code directory and its subdirectories, it is necessary to manually add it to the variable MF_CONFIGURE_HEADER_FILE_PATHS.
+MF_SOURCES_ALL_HEADER_FILE_PATHS  := $(MF_SOURCES_HEADER_FILE_PATHS) $(addprefix -I, $(basename $(MF_CONFIGURE_HEADER_FILE_PATHS)))
 
 #----------------------------
 # -Add the macro (-D xxx) prefix

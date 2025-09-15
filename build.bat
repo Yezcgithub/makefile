@@ -80,7 +80,7 @@ set MF_CONFIGURE_SOURCE_CODE_DIRECTORYS="./src"
 ::  Default is empty
 ::  Example: 
 ::  -  = "./lib"
-::  -  = "./clib" "./lib"
+::  -  = "./clib ./lib"
 ::  -  = "./libtest"
 set MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION=
 
@@ -109,7 +109,7 @@ set MF_CONFIGURE_EXCLUDED_FILES=
 ::  -  = "./inc"
 ::  -  = "../src/inc ./lib"
 ::  -  = "../lib/inc"
-set MF_CONFIGURE_OTHER_INCLUDE_PATHS=
+set MF_CONFIGURE_OTHER_HEADER_FILE_PATHS=
 
 ::----------------------------
 :: -Add configuration
@@ -154,36 +154,36 @@ set MF_CONFIGURE_ADD_USER_DEFINE=
 :: Parameter = [RELEASE] Remove the symbol table from the executable file. The symbol table does not affect the program's operation and can reduce the file size.
 :: Parameter = [DEBUG] Keep the symbol table in the executable file. Set to NO when using gdb for debugging.
 :: Parameter = [RELEASE_AND_DEBUG] Keep both the RELEASE and DEBUG executable files.
-set MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG=RELEASE_AND_DEBUG
+set MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG="RELEASE_AND_DEBUG"
 
 :: -::Compilation output file type::
 :: Parameter = [EXECUTE]                    Generates an executable program
 :: Parameter = [LIBRARY_DYNAMIC]            Generates (.so) dynamic library file
 :: Parameter = [LIBRARY_STATIC]             Generates (.a) static library file
 :: Parameter = [LIBRARY_STATIC_AND_DYNAMIC] Generates (.a and .so) dynamic-static library file
-set MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE=EXECUTE
+set MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE="EXECUTE"
 
 :: -::Compile the original file type::
 :: Parameter = [CPP_TYPE] Compiles both C and CPP files
 :: Parameter = [C_TYPE]   Compiles only C files
-set MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE=CPP_TYPE
+set MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE="CPP_TYPE"
 
 :: -::Whether to use static compilation (only applicable for generating executable programs)::
 :: Parameter = [YES] Use static compilation
 :: Parameter Explanation: During compilation, all dependent files will be included. It has less dependence on the running environment and is highly compatible; however, the generated program is relatively large.
 :: Parameter = [NO] Use dynamic compilation
 :: Parameter Explanation: After compilation, the program size is smaller and it relies on dynamic libraries. It cannot run independently.
-set MF_CONFIGURE_USING_STATIC_COMPILATION=NO
+set MF_CONFIGURE_USING_STATIC_COMPILATION="NO"
 
 :: -::Delete intermediate files after compilation(.d, .o, .i, .ii, .s)::
 :: Parameter = [YES] Delete intermediate files. Each compilation will be a full compilation.
 :: Parameter = [NO] Keep intermediate files.
-set MF_CONFIGURE_DELETING_INTERMEDIATE_FILES=NO
+set MF_CONFIGURE_DELETING_INTERMEDIATE_FILES="NO"
 
 :: -:: The console log during the compilation process is displayed in a formatted manner::
 :: Parameter = [YES] Displays the formatted log, allowing the filenames being compiled to be printed neatly
 :: Parameter = [NO]  Prints the default log
-set MF_CONFIGURE_USING_FORMATTEND_LOG=YES
+set MF_CONFIGURE_USING_FORMATTEND_LOG="YES"
 
 ::----------------------------
 :: -Options for generating the .o file during compilation
@@ -191,8 +191,8 @@ set MF_CONFIGURE_USING_FORMATTEND_LOG=YES
 :: -MMD: Generate dependency files, automatically generate .d dependency files, such as main.c → main.d
 :: -MP: Add a non-dependent pseudo-target for each header file in the generated .d file. This prevents make from reporting errors when the header file is deleted
 :: -fPIC: Generate position-independent code, used for compiling dynamic libraries. However, this is generally not used here
-set MF_CONFIGURE_C_OBJECTS_FLAGS=-MMD -MP
-set MF_CONFIGURE_CPP_OBJECTS_FLAGS=-MMD -MP
+set MF_CONFIGURE_C_OBJECTS_FLAGS="-MMD -MP"
+set MF_CONFIGURE_CPP_OBJECTS_FLAGS="-MMD -MP"
 
 ::----------------------------
 :: -Compilation tool configuration
@@ -230,7 +230,7 @@ set MF_CONFIGURE_COMPILE_PATH_PREFIX=
 ::  Example:
 ::  -  = "./tools/windows_tools/busybox"
 ::  -  = "./tools/busybox"
-::set MF_CONFIGURE_BUSYBOX_TOOLS="./tools/windows_tools/busybox"
+set MF_CONFIGURE_BUSYBOX_TOOLS="./tools/windows_tools/busybox"
 
 :: =============================================
 :: command

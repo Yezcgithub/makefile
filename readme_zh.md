@@ -158,6 +158,13 @@ MF_CONFIGURE_ADD_USER_DEFINE               ?=
 ### 4、设置文件编译选项
 
 ```makefile
+# -#配置头文件路径包含范围# 
+#  参数 = [ONLY_CONFIGURE_PATHS]    只包含通过 MF_CONFIGURE_OTHER_HEADER_FILE_PATHS 变量配置的路径
+#  参数 = [BUILD_SOURCE_CODE_PATHS] 在 ONLY_CONFIGURE_PATHS 的基础上还包含没有被排除掉的源文件目录(编译源码路径)
+#  参数 = [ALL_SOURCE_CODE_PATHS]   在 ONLY_CONFIGURE_PATHS 的基础上还包含所有的源文件目录
+#  参数 = [ALL_PATHS]               在 ALL_SOURCE_CODE_PATHS 的基础上还包含被排除的文件目录
+MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE  ?= ALL_SOURCE_CODE_PATHS
+
 # -#编译后的目标文件输出类型#
 #  参数 = [RELEASE] 删除可执行文件中的符号表,符号表不影响程序的运行,减小程序体积
 #  参数 = [DEBUG]   保留可执行文件中的符号表,使用gdb调试时要设置为 NO

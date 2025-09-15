@@ -157,6 +157,13 @@ MF_CONFIGURE_ADD_USER_DEFINE               ?=
 ### 4、Set file compilation options
 
 ```makefile
+# -#Configure the header file path with the include range# 
+#  Parameter = [ONLY_CONFIGURE_PATHS]    Only the paths that are configured through the MF_CONFIGURE_OTHER_HEADER_FILE_PATHS variable.
+#  Parameter = [BUILD_SOURCE_CODE_PATHS] It includes the source file directories that were not excluded in addition to ONLY_CONFIGURE_PATHS.(Source code compilation path)
+#  Parameter = [ALL_SOURCE_CODE_PATHS]   It includes all the source file directories in addition to ONLY_CONFIGURE_PATHS.
+#  Parameter = [ALL_PATHS]               It includes the excluded file directories in addition to ALL_SOURCE_CODE_PATHS.
+MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE  ?= ALL_SOURCE_CODE_PATHS
+
 # -#Output type of the compiled target file#
 # Parameter = [RELEASE] Remove the symbol table from the executable file. The symbol table does not affect the program's operation and can reduce the file size.
 # Parameter = [DEBUG] Keep the symbol table in the executable file. Set to NO when using gdb for debugging.

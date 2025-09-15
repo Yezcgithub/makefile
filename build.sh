@@ -108,7 +108,7 @@ export MF_CONFIGURE_EXCLUDED_FILES=""
 #  -  = "."
 #  -  = "../src/inc ./lib"
 #  -  = "../lib/inc"
-export MF_CONFIGURE_OTHER_INCLUDE_PATHS=""
+export MF_CONFIGURE_OTHER_HEADER_FILE_PATHS=""
 
 #----------------------------
 # -Add configuration
