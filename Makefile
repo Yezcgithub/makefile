@@ -918,5 +918,24 @@ clean:
 	$(call function_clean_target_file)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "clean success!"
 
+#----------------------------
+# -Print Help Information
+#----------------------------
+MF_PHONY += help
+help:
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) $(MF_NAME)
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) "version: $(MF_VERSION).$(MF_PATCHLEVEL).$(MF_SUBLEVEL).$(MF_EXTRAVERSION)"
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) "The following is a detailed explanation of all the commands."
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) ""
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) "   make start      - Generating the target file, It is the same as directly executing the make command."
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) "   make all        - Regenerate all files"
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) "   make clean      - Delete all intermediate files"
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) "   make preprocess - Generate preprocessing file"
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) "   make assemble   - Generate assembly file"
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) "   make object     - Generate object file"
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) "   make version    - Makefile version information"
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) "   make help       - Help Information"
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) ""
+
 # -Phony command
 .PHONY: $(MF_PHONY)
