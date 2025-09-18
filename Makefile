@@ -54,7 +54,7 @@ MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT          ?= NO
 MF_CONFIGURE_TARGET_FILE_NAME                ?= main
 
 # -# Configure the target file directory generation #
-#  The default is the folder where the Makefile is located (./build)
+#  The default is the folder where the Makefile is located (.)
 #  Example: 
 #  -  ?= ./build
 #  -  ?= ./output
@@ -62,7 +62,7 @@ MF_CONFIGURE_TARGET_FILE_NAME                ?= main
 MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH         ?= ./build
 
 # -# Configuration for the output directory of intermediate files during compilation #
-#  The default is the source code folder (./build/output)
+#  The default is the source code folder (.)
 #  Example: 
 #  -  ?= ./build/output
 #  -  ?= ./output
@@ -77,7 +77,7 @@ MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH   ?= ./build/output
 #  -  ?= .
 #  -  ?= ./src ../timer
 #  -  += ./test
-MF_CONFIGURE_SOURCE_CODE_DIRECTORYS          ?= .
+MF_CONFIGURE_SOURCE_CODE_DIRECTORYS          ?= ./src
 
 # -# The configuration requires excluding all source file directories (including all subdirectories) in this folder#
 #  Add multiple entries separated by spaces. For example: (./src ./lib)
@@ -332,10 +332,10 @@ MF_NAME         := "Universal Makefile"
 # -# - Based on parameter matching for platform selection
 #  windows ：?= WINDOWS or ?= Windows_NT
 #  linux   ：?= LINUX   or ?=
-ifeq ($(firstword $(MF_CONFIGURE_PLATFORM_OS)), Windows_NT)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_PLATFORM_OS))), Windows_NT)
 	MF_PLATFORM_OS := WINDOWS
 else
-ifeq ($(firstword $(MF_CONFIGURE_PLATFORM_OS)), WINDOWS)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_PLATFORM_OS))), WINDOWS)
 	MF_PLATFORM_OS := WINDOWS
 else
 	MF_PLATFORM_OS := LINUX
@@ -361,11 +361,11 @@ ifeq ($(strip $(MF_CONFIGURE_BUSYBOX_TOOLS)),)
     $(error -> Note: The busybox tool is not defined!)
 endif
 	# In the makefile, the used tools are utilized. The busybox stores the paths of the tools.
-	MF_PLATFORM_USING_TOOLS_RM            := $(firstword $(MF_CONFIGURE_BUSYBOX_TOOLS)) rm -rf
-	MF_PLATFORM_USING_TOOLS_MKDIR         := $(firstword $(MF_CONFIGURE_BUSYBOX_TOOLS)) mkdir -p
-	MF_PLATFORM_USING_TOOLS_CP            := $(firstword $(MF_CONFIGURE_BUSYBOX_TOOLS)) cp -p
-	MF_PLATFORM_USING_TOOLS_FIND          := $(firstword $(MF_CONFIGURE_BUSYBOX_TOOLS)) find
-	MF_PLATFORM_USING_TOOLS_ECHO          := $(firstword $(MF_CONFIGURE_BUSYBOX_TOOLS)) echo
+	MF_PLATFORM_USING_TOOLS_RM            := $(strip $(MF_CONFIGURE_BUSYBOX_TOOLS)) rm -rf
+	MF_PLATFORM_USING_TOOLS_MKDIR         := $(strip $(MF_CONFIGURE_BUSYBOX_TOOLS)) mkdir -p
+	MF_PLATFORM_USING_TOOLS_CP            := $(strip $(MF_CONFIGURE_BUSYBOX_TOOLS)) cp -p
+	MF_PLATFORM_USING_TOOLS_FIND          := $(strip $(MF_CONFIGURE_BUSYBOX_TOOLS)) find
+	MF_PLATFORM_USING_TOOLS_ECHO          := $(strip $(MF_CONFIGURE_BUSYBOX_TOOLS)) echo
 else
 	# Dynamic and static library object file prefixes
 	#----------------------------
@@ -426,17 +426,14 @@ endef
 # -Parameter verification
 #============================
 
-# Check the compilation method
-ifeq ($(strip $(MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT)), YES)
+#----------------------------
+# -Configuration verification related to the script
+#----------------------------
+# Check the configuration and compilation method.
+ifeq ($(firstword $(strip $(MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT))), YES)
     $(error -> Note: You have set it to be launched only by the script. Please use the script for compilation.)
 endif
 
-# Check if the variable is defined
-
-# Verify the name of the target file
-ifeq ($(strip $(MF_CONFIGURE_TARGET_FILE_NAME)),)
-    $(error -> Note: The target file name cannot be empty!)
-endif
 #----------------------------
 # -Use tools for verification
 #----------------------------
@@ -456,13 +453,28 @@ ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_ECHO)),)
     $(error -> Note: The echo tool is not defined!)
 endif
 
+#----------------------------
+# -Check if the variable is defined.
+#----------------------------
+# Check whether the generated target file name is empty
+ifeq ($(strip $(MF_CONFIGURE_TARGET_FILE_NAME)),)
+    $(error -> Note: The target file name cannot be empty!)
+else
+ifeq ($(strip $(MF_CONFIGURE_TARGET_FILE_NAME)), "")
+    $(error -> Note: The target file name cannot be empty!)
+endif
+endif
+
+# Generate verification for the target file name
+MF_VERIFY_TARGET_FILE_NAME              := $(strip $(if $(strip $(MF_CONFIGURE_TARGET_FILE_NAME)), $(firstword $(MF_CONFIGURE_TARGET_FILE_NAME)), main))
+
 # Verification of the output directory of the target file
-MF_VERIFY_TARGET_FILE_OUTPUT_PATH       := $(if $(strip $(MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH)), $(firstword $(MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH)), .)
+MF_VERIFY_TARGET_FILE_OUTPUT_PATH       := $(strip $(if $(strip $(MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH)), $(firstword $(MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH)), .))
 # Verification of the intermediate file output directory
-MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH := $(if $(strip $(MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH)), $(firstword $(MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH)), .)
+MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH := $(strip $(if $(strip $(MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH)), $(firstword $(MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH)), .))
 
 # Verification of the root directory for compiling source code
-MF_VERIFY_SOURCE_CODE_DIRECTORYS        := $(if $(strip $(MF_CONFIGURE_SOURCE_CODE_DIRECTORYS)), $(MF_CONFIGURE_SOURCE_CODE_DIRECTORYS), .)
+MF_VERIFY_SOURCE_CODE_DIRECTORYS        := $(strip $(if $(strip $(MF_CONFIGURE_SOURCE_CODE_DIRECTORYS)), $(MF_CONFIGURE_SOURCE_CODE_DIRECTORYS), .))
 
 # Make sure the output directory exists
 $($(MF_PLATFORM_USING_TOOLS_MKDIR) $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH))
@@ -473,57 +485,59 @@ $($(MF_PLATFORM_USING_TOOLS_MKDIR) $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH))
 #============================
 # Make variables (CC, etc...)
 # -as gcc is used to output assembly files, and the resulting object files are linked by the linker ld.
-MF_COMPILE_TOOL_AS                := $(MF_CONFIGURE_COMPILE_PATH_PREFIX)as
+MF_COMPILE_TOOL_AS                := $(strip $(MF_CONFIGURE_COMPILE_PATH_PREFIX))as
 # -ld Linking combines all the.o files to generate an executable file, not a pure binary file.
-MF_COMPILE_TOOL_LD                := $(MF_CONFIGURE_COMPILE_PATH_PREFIX)ld
+MF_COMPILE_TOOL_LD                := $(strip $(MF_CONFIGURE_COMPILE_PATH_PREFIX))ld
 # -gcc C compiler command
-MF_COMPILE_TOOL_CC                := $(MF_CONFIGURE_COMPILE_PATH_PREFIX)gcc
-# -g++ C++ compilation command
-MF_COMPILE_TOOL_CPP               := $(MF_CONFIGURE_COMPILE_PATH_PREFIX)g++ #$(GCC_TOOL_CC) -E
+MF_COMPILE_TOOL_CC                := $(strip $(MF_CONFIGURE_COMPILE_PATH_PREFIX))gcc
+# -g++ C++ compilation command, $(GCC_TOOL_CC) -E
+MF_COMPILE_TOOL_CPP               := $(strip $(MF_CONFIGURE_COMPILE_PATH_PREFIX))g++
 # -ar Package, extract and archive the files
-MF_COMPILE_TOOL_AR                := $(MF_CONFIGURE_COMPILE_PATH_PREFIX)ar
+MF_COMPILE_TOOL_AR                := $(strip $(MF_CONFIGURE_COMPILE_PATH_PREFIX))ar
 # -nm View the symbol table of the executable file
-MF_COMPILE_TOOL_NM                := $(MF_CONFIGURE_COMPILE_PATH_PREFIX)nm
+MF_COMPILE_TOOL_NM                := $(strip $(MF_CONFIGURE_COMPILE_PATH_PREFIX))nm
 # -strip Compression file command, deleting symbol tables in executable files
-MF_COMPILE_TOOL_STRIP             := $(MF_CONFIGURE_COMPILE_PATH_PREFIX)strip
+MF_COMPILE_TOOL_STRIP             := $(strip $(MF_CONFIGURE_COMPILE_PATH_PREFIX))strip
 # -objcopy Generate a binary file (.bin) from the.elf file.
-MF_COMPILE_TOOL_OBJCOPY           := $(MF_CONFIGURE_COMPILE_PATH_PREFIX)objcopy
+MF_COMPILE_TOOL_OBJCOPY           := $(strip $(MF_CONFIGURE_COMPILE_PATH_PREFIX))objcopy
 # -objdump Disassemble the.elf file to generate a disassembly file (.dis)
-MF_COMPILE_TOOL_OBJDUMP           := $(MF_CONFIGURE_COMPILE_PATH_PREFIX)objdump
+MF_COMPILE_TOOL_OBJDUMP           := $(strip $(MF_CONFIGURE_COMPILE_PATH_PREFIX))objdump
 # -size List the size of each section of the target file as well as the total size.
-MF_COMPILE_TOOL_SIZE              := $(MF_CONFIGURE_COMPILE_PATH_PREFIX)size
+MF_COMPILE_TOOL_SIZE              := $(strip $(MF_CONFIGURE_COMPILE_PATH_PREFIX))size
 
 #============================
 # -Obtain information about the files in the specified source code directory
 #============================
 # -Find the directory information (subfolders) of all the files in the source code directory path
-MF_SOURCES_ALL_DIRECTORY_PATHS    := $(call function_find_subdirectories, $(MF_VERIFY_SOURCE_CODE_DIRECTORYS))
+MF_SOURCES_ALL_DIRECTORY_PATHS      := $(strip $(sort $(call function_find_subdirectories, $(MF_VERIFY_SOURCE_CODE_DIRECTORYS))))
 # -Locate the directory information (subfolders) that need to be excluded in the source code directory path
-MF_SOURCES_EXCLUDED_DIRECTORYS    := $(if $(strip $(MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION)), $(call function_find_subdirectories, $(MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION)),)
+MF_SOURCES_EXCLUDED_DIRECTORYS      := $(strip $(sort $(if $(strip $(MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION)), $(call function_find_subdirectories, $(MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION)),)))
+# -All the directories and folders that need to be excluded
+MF_SOURCES_ALL_EXCLUDED_DIRECTORYS  := $(strip $(sort $(MF_CONFIGURE_EXCLUDED_DIRECTORYS) $(MF_SOURCES_EXCLUDED_DIRECTORYS)))
 # -Exclude the specified directory from the source code directory path
-MF_SOURCES_DIRECTORY_PATHS        := $(filter-out $(MF_CONFIGURE_EXCLUDED_DIRECTORYS) $(MF_SOURCES_EXCLUDED_DIRECTORYS), $(MF_SOURCES_ALL_DIRECTORY_PATHS))
+MF_SOURCES_DIRECTORY_PATHS          := $(strip $(sort $(filter-out $(MF_SOURCES_ALL_EXCLUDED_DIRECTORYS), $(MF_SOURCES_ALL_DIRECTORY_PATHS))))
 
 # -The C source files (.c) found in the source code directory path
-MF_SOURCES_C_ALL_FILES            := $(foreach dir, $(MF_SOURCES_DIRECTORY_PATHS), $(wildcard $(dir)/*.c))
-MF_SOURCES_C_FILES                := $(filter-out $(MF_CONFIGURE_EXCLUDED_FILES), $(MF_SOURCES_C_ALL_FILES))
-MF_SOURCES_C_OBJECTS_FILES_TMP    := $(patsubst %.c, $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o, $(MF_SOURCES_C_FILES))
-MF_SOURCES_C_OBJECTS_FILES        := $(subst //,/,$(subst /./,/,$(MF_SOURCES_C_OBJECTS_FILES_TMP)))
-MF_SOURCES_C_DEPENDENT_FILES      := $(MF_SOURCES_C_OBJECTS_FILES:.o=.d)
-MF_SOURCES_C_PREPROCESSED_FILES   := $(MF_SOURCES_C_OBJECTS_FILES:.o=.i)
-MF_SOURCES_C_ASSEMBLY_FILES       := $(MF_SOURCES_C_OBJECTS_FILES:.o=.s)
-MF_SOURCES_C_FILES_DIRECTORY      := $(dir $(MF_SOURCES_C_FILES))
-MF_SOURCES_C_OBJECTS_DIRECTORY    := $(dir $(MF_SOURCES_C_OBJECTS_FILES))
+MF_SOURCES_C_ALL_FILES              := $(strip $(foreach dir, $(MF_SOURCES_DIRECTORY_PATHS), $(wildcard $(dir)/*.c)))
+MF_SOURCES_C_FILES                  := $(filter-out $(MF_CONFIGURE_EXCLUDED_FILES), $(MF_SOURCES_C_ALL_FILES))
+MF_SOURCES_C_OBJECTS_FILES_TMP      := $(patsubst %.c, $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o, $(MF_SOURCES_C_FILES))
+MF_SOURCES_C_OBJECTS_FILES          := $(subst //,/,$(subst /./,/,$(MF_SOURCES_C_OBJECTS_FILES_TMP)))
+MF_SOURCES_C_DEPENDENT_FILES        := $(MF_SOURCES_C_OBJECTS_FILES:.o=.d)
+MF_SOURCES_C_PREPROCESSED_FILES     := $(MF_SOURCES_C_OBJECTS_FILES:.o=.i)
+MF_SOURCES_C_ASSEMBLY_FILES         := $(MF_SOURCES_C_OBJECTS_FILES:.o=.s)
+MF_SOURCES_C_FILES_DIRECTORY        := $(dir $(MF_SOURCES_C_FILES))
+MF_SOURCES_C_OBJECTS_DIRECTORY      := $(dir $(MF_SOURCES_C_OBJECTS_FILES))
 
 # -The C++ source files (.cpp) found in the source code directory path
-MF_SOURCES_CPP_ALL_FILES          := $(foreach dir, $(MF_SOURCES_DIRECTORY_PATHS), $(wildcard $(dir)/*.cpp))
-MF_SOURCES_CPP_FILES              := $(filter-out $(MF_CONFIGURE_EXCLUDED_FILES), $(MF_SOURCES_CPP_ALL_FILES))
-MF_SOURCES_CPP_OBJECTS_FILES_TMP  := $(patsubst %.cpp, $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o, $(MF_SOURCES_CPP_FILES))
-MF_SOURCES_CPP_OBJECTS_FILES      := $(subst //,/,$(subst /./,/,$(MF_SOURCES_CPP_OBJECTS_FILES_TMP)))
-MF_SOURCES_CPP_DEPENDENT_FILES    := $(MF_SOURCES_CPP_OBJECTS_FILES:.o=.d)
-MF_SOURCES_CPP_PREPROCESSED_FILES := $(MF_SOURCES_CPP_OBJECTS_FILES:.o=.ii)
-MF_SOURCES_CPP_ASSEMBLY_FILES     := $(MF_SOURCES_CPP_OBJECTS_FILES:.o=.s)
-MF_SOURCES_CPP_FILES_DIRECTORY    := $(dir $(MF_SOURCES_CPP_FILES))
-MF_SOURCES_CPP_OBJECTS_DIRECTORY  := $(dir $(MF_SOURCES_CPP_OBJECTS_FILES))
+MF_SOURCES_CPP_ALL_FILES            := $(strip $(foreach dir, $(MF_SOURCES_DIRECTORY_PATHS), $(wildcard $(dir)/*.cpp)))
+MF_SOURCES_CPP_FILES                := $(filter-out $(MF_CONFIGURE_EXCLUDED_FILES), $(MF_SOURCES_CPP_ALL_FILES))
+MF_SOURCES_CPP_OBJECTS_FILES_TMP    := $(patsubst %.cpp, $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o, $(MF_SOURCES_CPP_FILES))
+MF_SOURCES_CPP_OBJECTS_FILES        := $(subst //,/,$(subst /./,/,$(MF_SOURCES_CPP_OBJECTS_FILES_TMP)))
+MF_SOURCES_CPP_DEPENDENT_FILES      := $(MF_SOURCES_CPP_OBJECTS_FILES:.o=.d)
+MF_SOURCES_CPP_PREPROCESSED_FILES   := $(MF_SOURCES_CPP_OBJECTS_FILES:.o=.ii)
+MF_SOURCES_CPP_ASSEMBLY_FILES       := $(MF_SOURCES_CPP_OBJECTS_FILES:.o=.s)
+MF_SOURCES_CPP_FILES_DIRECTORY      := $(dir $(MF_SOURCES_CPP_FILES))
+MF_SOURCES_CPP_OBJECTS_DIRECTORY    := $(dir $(MF_SOURCES_CPP_OBJECTS_FILES))
 
 #============================
 # -Add files, parameters
@@ -552,16 +566,16 @@ MF_PARAM_ASSEMBLY                 := $(MF_SOURCES_C_ASSEMBLY_FILES) $(MF_SOURCES
 # -Add header file directory
 #----------------------------
 # = ONLY_CONFIGURE_PATHS, Only the paths that are configured through the MF_CONFIGURE_HEADER_FILE_PATHS variable.
-ifeq ($(firstword $(MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE)), ONLY_CONFIGURE_PATHS)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE))), ONLY_CONFIGURE_PATHS)
 	MF_SOURCES_HEADER_FILE_PATHS  :=
 else
 # = BUILD_SOURCE_CODE_PATHS, It includes the source file directories that were not excluded in addition to ONLY_CONFIGURE_PATHS.(Source code compilation path)
-ifeq ($(firstword $(MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE)), BUILD_SOURCE_CODE_PATHS)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE))), BUILD_SOURCE_CODE_PATHS)
 	MF_SOURCES_HEADER_FILE_PATHS  := $(addprefix -I, $(MF_SOURCES_DIRECTORY_PATHS))
 else
 # = ALL_PATHS, It includes the excluded file directories in addition to ALL_SOURCE_CODE_PATHS.
-ifeq ($(firstword $(MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE)), ALL_PATHS)
-	MF_SOURCES_HEADER_FILE_PATHS  := $(addprefix -I, $(MF_SOURCES_ALL_DIRECTORY_PATHS) $(MF_CONFIGURE_EXCLUDED_DIRECTORYS) $(MF_SOURCES_EXCLUDED_DIRECTORYS))
+ifeq ($(strip $(firstword $(MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE))), ALL_PATHS)
+	MF_SOURCES_HEADER_FILE_PATHS  := $(addprefix -I, $(MF_SOURCES_ALL_DIRECTORY_PATHS) $(MF_SOURCES_ALL_EXCLUDED_DIRECTORYS))
 # = ALL_SOURCE_CODE_PATHS, It includes all the source file directories in addition to ONLY_CONFIGURE_PATHS.
 else
 	MF_SOURCES_HEADER_FILE_PATHS  := $(addprefix -I, $(MF_SOURCES_ALL_DIRECTORY_PATHS))
@@ -570,43 +584,43 @@ endif
 endif
 
 # -Header file directory: Except for the specified source code directory and its subdirectories, it is necessary to manually add it to the variable MF_CONFIGURE_HEADER_FILE_PATHS.
-MF_SOURCES_ALL_HEADER_FILE_PATHS  := $(MF_SOURCES_HEADER_FILE_PATHS) $(addprefix -I, $(basename $(MF_CONFIGURE_HEADER_FILE_PATHS)))
+MF_SOURCES_ALL_HEADER_FILE_PATHS  := $(sort $(strip $(MF_SOURCES_HEADER_FILE_PATHS)) $(strip $(addprefix -I, $(basename $(MF_CONFIGURE_HEADER_FILE_PATHS)))))
 
 #----------------------------
 # -Add the macro (-D xxx) prefix
 #----------------------------
-MF_PARAM_DEFINE_FLAGS             := $(if $(strip $(MF_CONFIGURE_ADD_USER_DEFINE)), $(addprefix -D, $(basename $(MF_CONFIGURE_ADD_USER_DEFINE))),)
+MF_PARAM_DEFINE_FLAGS             := $(strip $(if $(strip $(MF_CONFIGURE_ADD_USER_DEFINE)), $(addprefix -D, $(basename $(MF_CONFIGURE_ADD_USER_DEFINE))),))
 
 #----------------------------
 # -Add the C/C++ flag
 #----------------------------
-MF_PARAM_C_FLAGS                  := $(MF_CONFIGURE_C_FLAGS) $(MF_SOURCES_ALL_HEADER_FILE_PATHS) $(MF_PARAM_DEFINE_FLAGS)
-MF_PARAM_CPP_FLAGS                := $(MF_CONFIGURE_CPP_FLAGS) $(MF_SOURCES_ALL_HEADER_FILE_PATHS) $(MF_PARAM_DEFINE_FLAGS)
+MF_PARAM_C_FLAGS                  := $(strip $(MF_CONFIGURE_C_FLAGS)) $(MF_SOURCES_ALL_HEADER_FILE_PATHS) $(MF_PARAM_DEFINE_FLAGS)
+MF_PARAM_CPP_FLAGS                := $(strip $(MF_CONFIGURE_CPP_FLAGS)) $(MF_SOURCES_ALL_HEADER_FILE_PATHS) $(MF_PARAM_DEFINE_FLAGS)
 #----------------------------
 # -The third-party libraries used in the program need to be added during the compilation process.
 #----------------------------
-MF_PARAM_USING_LIBRARY_FLAGS      := $(MF_CONFIGURE_USING_STD_LIBRARY_FLAGS) $(MF_CONFIGURE_USING_LIBRARY_FLAGS)
+MF_PARAM_USING_LIBRARY_FLAGS      := $(strip $(MF_CONFIGURE_USING_STD_LIBRARY_FLAGS)) $(strip $(MF_CONFIGURE_USING_LIBRARY_FLAGS))
 
 #----------------------------
 # -Redefine the name
 #----------------------------
-MF_PARAM_TARGET_EXECUTE           := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_CONFIGURE_TARGET_FILE_NAME)$(MF_PLATFORM_TARGET_EXECUTE_SUFFIX)
-MF_PARAM_TARGET_LIB_STATIC        := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_PLATFORM_TARGET_LIB_PREFIX)$(MF_CONFIGURE_TARGET_FILE_NAME)$(MF_PLATFORM_TARGET_LIB_STATIC_SUFFIX)
-MF_PARAM_TARGET_LIB_DYNAMIC       := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_PLATFORM_TARGET_LIB_PREFIX)$(MF_CONFIGURE_TARGET_FILE_NAME)$(MF_PLATFORM_TARGET_LIB_DYNAMIC_SUFFIX)
+MF_PARAM_TARGET_EXECUTE           := $(strip $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH))/$(strip $(MF_VERIFY_TARGET_FILE_NAME))$(strip $(MF_PLATFORM_TARGET_EXECUTE_SUFFIX))
+MF_PARAM_TARGET_LIB_STATIC        := $(strip $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH))/$(strip $(MF_PLATFORM_TARGET_LIB_PREFIX))$(strip $(MF_VERIFY_TARGET_FILE_NAME))$(strip $(MF_PLATFORM_TARGET_LIB_STATIC_SUFFIX))
+MF_PARAM_TARGET_LIB_DYNAMIC       := $(strip $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH))/$(strip $(MF_PLATFORM_TARGET_LIB_PREFIX))$(strip $(MF_VERIFY_TARGET_FILE_NAME))$(strip $(MF_PLATFORM_TARGET_LIB_DYNAMIC_SUFFIX))
 # This is merely used to set the target name.
-MF_PARAM_TARGET_LIB_STATICDYNAMIC := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_PLATFORM_TARGET_LIB_PREFIX)$(MF_CONFIGURE_TARGET_FILE_NAME)_a_so
+MF_PARAM_TARGET_LIB_STATICDYNAMIC := $(strip $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH))/$(strip $(MF_PLATFORM_TARGET_LIB_PREFIX))$(strip $(MF_VERIFY_TARGET_FILE_NAME))_a_so
 
 # debug target, (MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG = RELEASE_AND_DEBUG)
-MF_PARAM_TARGET_EXECUTE_DEBUG     := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_CONFIGURE_TARGET_FILE_NAME)_debug$(MF_PLATFORM_TARGET_EXECUTE_SUFFIX)
-MF_PARAM_TARGET_LIB_STATIC_DEBUG  := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_PLATFORM_TARGET_LIB_PREFIX)$(MF_CONFIGURE_TARGET_FILE_NAME)_debug$(MF_PLATFORM_TARGET_LIB_STATIC_SUFFIX)
-MF_PARAM_TARGET_LIB_DYNAMIC_DEBUG := $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH)/$(MF_PLATFORM_TARGET_LIB_PREFIX)$(MF_CONFIGURE_TARGET_FILE_NAME)_debug$(MF_PLATFORM_TARGET_LIB_DYNAMIC_SUFFIX)
+MF_PARAM_TARGET_EXECUTE_DEBUG     := $(strip $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH))/$(strip $(MF_VERIFY_TARGET_FILE_NAME))_debug$(strip $(MF_PLATFORM_TARGET_EXECUTE_SUFFIX))
+MF_PARAM_TARGET_LIB_STATIC_DEBUG  := $(strip $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH))/$(strip $(MF_PLATFORM_TARGET_LIB_PREFIX))$(strip $(MF_VERIFY_TARGET_FILE_NAME))_debug$(strip $(MF_PLATFORM_TARGET_LIB_STATIC_SUFFIX))
+MF_PARAM_TARGET_LIB_DYNAMIC_DEBUG := $(strip $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH))/$(strip $(MF_PLATFORM_TARGET_LIB_PREFIX))$(strip $(MF_VERIFY_TARGET_FILE_NAME))_debug$(strip $(MF_PLATFORM_TARGET_LIB_DYNAMIC_SUFFIX))
 
 MF_PARAM_TARGET                    = $(MF_PARAM_TARGET_EXECUTE)
 
 #----------------------------
 # -Whether to use static compilation
 #----------------------------
-ifeq ($(MF_CONFIGURE_USING_STATIC_COMPILATION), YES)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_STATIC_COMPILATION))), YES)
 	MF_PARAM_USING_STATIC_COMPILATION := -static
 else
 	MF_PARAM_USING_STATIC_COMPILATION :=
@@ -615,12 +629,12 @@ endif
 #----------------------------
 # -Compile the original file type
 #----------------------------
-ifeq ($(MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE), C_TYPE)
-	MF_PARAM_COMPILE_TOOL_CC := $(MF_COMPILE_TOOL_CC)
-	MF_PARAM_CC_OBJECTS      := $(MF_PARAM_C_OBJECTS)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE))), C_TYPE)
+	MF_PARAM_COMPILE_TOOL_CC := $(strip $(MF_COMPILE_TOOL_CC))
+	MF_PARAM_CC_OBJECTS      := $(strip $(MF_PARAM_C_OBJECTS))
 else
-	MF_PARAM_COMPILE_TOOL_CC := $(MF_COMPILE_TOOL_CPP)
-	MF_PARAM_CC_OBJECTS      := $(MF_PARAM_C_OBJECTS) $(MF_PARAM_CPP_OBJECTS)
+	MF_PARAM_COMPILE_TOOL_CC := $(strip $(MF_COMPILE_TOOL_CPP))
+	MF_PARAM_CC_OBJECTS      := $(strip $(MF_PARAM_C_OBJECTS)) $(strip $(MF_PARAM_CPP_OBJECTS))
 endif
 
 #----------------------------
@@ -638,7 +652,7 @@ endif
 #----------------------------
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.i : %.c
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
-ifeq ($(MF_CONFIGURE_USING_FORMATTEND_LOG), YES)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "[PREPROCESS] $< -> $@"
 	@$(MF_PARAM_COMPILE_TOOL_CC) -E "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 else
@@ -650,7 +664,7 @@ endif
 #----------------------------
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.s : %.c
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
-ifeq ($(MF_CONFIGURE_USING_FORMATTEND_LOG), YES)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "[ASSEMBLY] $< -> $@"
 	@$(MF_PARAM_COMPILE_TOOL_CC) -S "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 else
@@ -662,11 +676,11 @@ endif
 #----------------------------
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o : %.c
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
-ifeq ($(MF_CONFIGURE_USING_FORMATTEND_LOG), YES)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "[CC] $<"
-	@$(MF_PARAM_COMPILE_TOOL_CC) $(MF_CONFIGURE_C_OBJECTS_FLAGS) -c "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	@$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_CONFIGURE_C_OBJECTS_FLAGS)) -c "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 else
-	$(MF_PARAM_COMPILE_TOOL_CC) $(MF_CONFIGURE_C_OBJECTS_FLAGS) -c "$<" -o "$@" $(MF_PARAM_C_FLAGS)
+	$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_CONFIGURE_C_OBJECTS_FLAGS)) -c "$<" -o "$@" $(MF_PARAM_C_FLAGS)
 endif
 
 #----------------------------
@@ -674,7 +688,7 @@ endif
 #----------------------------
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.ii : %.cpp
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
-ifeq ($(MF_CONFIGURE_USING_FORMATTEND_LOG), YES)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "[PREPROCESS] $< -> $@"
 	@$(MF_COMPILE_TOOL_CPP) -E "$<" -o "$@" $(MF_PARAM_CPP_FLAGS)
 else
@@ -686,7 +700,7 @@ endif
 #----------------------------
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.s : %.cpp
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
-ifeq ($(MF_CONFIGURE_USING_FORMATTEND_LOG), YES)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "[ASSEMBLY] $< -> $@"
 	@$(MF_COMPILE_TOOL_CPP) -S "$<" -o "$@" $(MF_PARAM_CPP_FLAGS)
 else
@@ -698,11 +712,11 @@ endif
 #----------------------------
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o : %.cpp
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
-ifeq ($(MF_CONFIGURE_USING_FORMATTEND_LOG), YES)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "[CPP] $<"
-	@$(MF_COMPILE_TOOL_CPP) $(MF_CONFIGURE_CPP_OBJECTS_FLAGS) -c "$<" -o "$@" $(MF_PARAM_CPP_FLAGS)
+	@$(MF_COMPILE_TOOL_CPP) $(strip $(MF_CONFIGURE_CPP_OBJECTS_FLAGS)) -c "$<" -o "$@" $(MF_PARAM_CPP_FLAGS)
 else
-	$(MF_COMPILE_TOOL_CPP) $(MF_CONFIGURE_CPP_OBJECTS_FLAGS) -c "$<" -o "$@" $(MF_PARAM_CPP_FLAGS)
+	$(MF_COMPILE_TOOL_CPP) $(strip $(MF_CONFIGURE_CPP_OBJECTS_FLAGS)) -c "$<" -o "$@" $(MF_PARAM_CPP_FLAGS)
 endif
 
 #============================
@@ -712,7 +726,7 @@ endif
 # -Static library construction
 #----------------------------
 # target file output type begin
-ifeq ($(MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE), LIBRARY_STATIC)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE))), LIBRARY_STATIC)
 MF_PARAM_TARGET = $(MF_PARAM_TARGET_LIB_STATIC)
 $(MF_PARAM_TARGET): $(MF_PARAM_CC_OBJECTS)
 # - Parameter rcs
@@ -722,10 +736,10 @@ $(MF_PARAM_TARGET): $(MF_PARAM_CC_OBJECTS)
 	@$(MF_COMPILE_TOOL_AR) rcs $(MF_PARAM_TARGET_LIB_STATIC) $^
 
 # target file output release or debug begin
-ifeq ($(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG), RELEASE)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG))), RELEASE)
 	$(MF_COMPILE_TOOL_STRIP) $(MF_PARAM_TARGET_LIB_STATIC)
 endif
-ifeq ($(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG), RELEASE_AND_DEBUG)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG))), RELEASE_AND_DEBUG)
 	@$(MF_PLATFORM_USING_TOOLS_CP) $(MF_PARAM_TARGET_LIB_STATIC)  $(MF_PARAM_TARGET_LIB_STATIC_DEBUG)
 	@$(MF_COMPILE_TOOL_STRIP) $(MF_PARAM_TARGET_LIB_STATIC)
 endif
@@ -739,16 +753,16 @@ endif
 # -Dynamic library construction
 #----------------------------
 # target file output type begin
-ifeq ($(MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE), LIBRARY_DYNAMIC)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE))), LIBRARY_DYNAMIC)
 MF_PARAM_TARGET = $(MF_PARAM_TARGET_LIB_DYNAMIC)
 $(MF_PARAM_TARGET): $(MF_PARAM_CC_OBJECTS)
 	@$(MF_PARAM_COMPILE_TOOL_CC) -shared -fPIC -o $(MF_PARAM_TARGET_LIB_DYNAMIC) $^ $(MF_PARAM_USING_LIBRARY_FLAGS)
 
 # target file output release or debug begin
-ifeq ($(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG), RELEASE)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG))), RELEASE)
 	@$(MF_COMPILE_TOOL_STRIP) $(MF_PARAM_TARGET_LIB_DYNAMIC)
 endif
-ifeq ($(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG), RELEASE_AND_DEBUG)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG))), RELEASE_AND_DEBUG)
 	@$(MF_PLATFORM_USING_TOOLS_CP) $(MF_PARAM_TARGET_LIB_DYNAMIC) $(MF_PARAM_TARGET_LIB_DYNAMIC_DEBUG)
 	@$(MF_COMPILE_TOOL_STRIP) $(MF_PARAM_TARGET_LIB_DYNAMIC)
 endif
@@ -763,7 +777,7 @@ endif
 # -Static library and dynamic library construction
 #----------------------------
 # target file output type begin
-ifeq ($(MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE), LIBRARY_STATIC_AND_DYNAMIC)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE))), LIBRARY_STATIC_AND_DYNAMIC)
 MF_PARAM_TARGET = $(MF_PARAM_TARGET_LIB_STATICDYNAMIC)
 $(MF_PARAM_TARGET): $(MF_PARAM_CC_OBJECTS)
 # - Parameter rcs
@@ -774,11 +788,11 @@ $(MF_PARAM_TARGET): $(MF_PARAM_CC_OBJECTS)
 	@$(MF_PARAM_COMPILE_TOOL_CC) -shared -fPIC -o $(MF_PARAM_TARGET_LIB_DYNAMIC) $^ $(MF_PARAM_USING_LIBRARY_FLAGS)
 
 # target file output release or debug begin
-ifeq ($(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG), RELEASE)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG))), RELEASE)
 	@$(MF_COMPILE_TOOL_STRIP) $(MF_PARAM_TARGET_LIB_STATIC)
 	@$(MF_COMPILE_TOOL_STRIP) $(MF_PARAM_TARGET_LIB_DYNAMIC)
 endif
-ifeq ($(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG), RELEASE_AND_DEBUG)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG))), RELEASE_AND_DEBUG)
 	@$(MF_PLATFORM_USING_TOOLS_CP) $(MF_PARAM_TARGET_LIB_STATIC)  $(MF_PARAM_TARGET_LIB_STATIC_DEBUG)
 	@$(MF_PLATFORM_USING_TOOLS_CP) $(MF_PARAM_TARGET_LIB_DYNAMIC) $(MF_PARAM_TARGET_LIB_DYNAMIC_DEBUG)
 	@$(MF_COMPILE_TOOL_STRIP) $(MF_PARAM_TARGET_LIB_STATIC)
@@ -795,16 +809,16 @@ endif
 # -Executable file construction
 #----------------------------
 # target file output type begin
-ifeq ($(MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE), EXECUTE)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE))), EXECUTE)
 MF_PARAM_TARGET = $(MF_PARAM_TARGET_EXECUTE)
 $(MF_PARAM_TARGET) : $(MF_PARAM_CC_OBJECTS)
 	@$(MF_PARAM_COMPILE_TOOL_CC) $(MF_PARAM_USING_STATIC_COMPILATION) -o $@ $^ $(MF_PARAM_USING_LIBRARY_FLAGS)
 
 # target file output release or debug begin
-ifeq ($(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG), RELEASE)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG))), RELEASE)
 	@$(MF_COMPILE_TOOL_STRIP) $(MF_PARAM_TARGET_EXECUTE)
 endif
-ifeq ($(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG), RELEASE_AND_DEBUG)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG))), RELEASE_AND_DEBUG)
 	@$(MF_PLATFORM_USING_TOOLS_CP) $(MF_PARAM_TARGET_EXECUTE) $(MF_PARAM_TARGET_EXECUTE_DEBUG)
 	@$(MF_COMPILE_TOOL_STRIP) $(MF_PARAM_TARGET_EXECUTE)
 endif
@@ -824,7 +838,7 @@ MF_PHONY = start
 start : $(MF_PARAM_TARGET)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) "build success!"
 
-ifeq ($(MF_CONFIGURE_DELETING_INTERMEDIATE_FILES), YES)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_DELETING_INTERMEDIATE_FILES))), YES)
 	$(call function_clean_intermediate_file)
 endif
 
