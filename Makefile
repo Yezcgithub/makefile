@@ -38,7 +38,7 @@
 # -#Configuration compilation method#
 #  Parameter = [YES] It can only be compiled by a script. When using make for compilation, it will prompt to use the script for execution (the script must set this variable and the value must not be "YES")
 #  Parameter = [NO]  You can directly use "make" to compile.
-MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT          ?= NO
+MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT              ?= NO
 
 #============================
 # -Makeflie Configuration
@@ -51,7 +51,7 @@ MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT          ?= NO
 #  Example: 
 #  -  ?= main
 #  -  ?= test
-MF_CONFIGURE_TARGET_FILE_NAME                ?= main
+MF_CONFIGURE_TARGET_FILE_NAME                   ?= main
 
 # -# Configure the target file directory generation #
 #  The default is the folder where the Makefile is located (.)
@@ -59,7 +59,7 @@ MF_CONFIGURE_TARGET_FILE_NAME                ?= main
 #  -  ?= ./build
 #  -  ?= ./output
 #  -  ?= .
-MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH         ?= ./build
+MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH            ?= ./build
 
 # -# Configuration for the output directory of intermediate files during compilation #
 #  The default is the source code folder (.)
@@ -67,7 +67,7 @@ MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH         ?= ./build
 #  -  ?= ./build/output
 #  -  ?= ./output
 #  -  ?= .
-MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH   ?= ./build/output
+MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH      ?= ./build/output
 
 # -# The root directory (including subfolders) for compiling the source code #
 # Add multiple root directories separated by spaces, for example: (./src ./lib)
@@ -77,7 +77,26 @@ MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH   ?= ./build/output
 #  -  ?= .
 #  -  ?= ./src ../timer
 #  -  += ./test
-MF_CONFIGURE_SOURCE_CODE_DIRECTORYS          ?= ./src
+MF_CONFIGURE_SOURCE_CODE_DIRECTORYS_RECURSION   ?= ./src
+
+# -#The directory where the source code needs to be compiled for configuration#
+#  Add multiple root directories separated by spaces, for example: (./src ./lib)
+#  Note: Only the added contents will take effect.
+#  Default to being empty
+#  Example: 
+#  -  ?= .
+#  -  ?= ./src ./src/timer
+#  -  += ./test
+MF_CONFIGURE_SOURCE_CODE_DIRECTORYS              ?=
+
+# -#Configure the source code files to be added#
+#  Add multiple items separated by spaces. For example: = ./src/main.c ./lib/test.c
+#  Default to being empty
+#  Example: 
+#  -  ?= ./test.c
+#  -  ?= ./src/main.c ./lib/test.c ./lib/timer/test.c
+#  -  += ./src/test.c 
+MF_CONFIGURE_SOURCE_CODE_FILES                   ?=
 
 # -# The configuration requires excluding all source file directories (including all subdirectories) in this folder#
 #  Add multiple entries separated by spaces. For example: (./src ./lib)
@@ -87,7 +106,7 @@ MF_CONFIGURE_SOURCE_CODE_DIRECTORYS          ?= ./src
 #  -  ?= ./lib
 #  -  ?= ./clib ./lib
 #  -  += ./libtest
-MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION   ?=
+MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION      ?=
 
 # -# The configuration requires the exclusion of all source file directories in this folder#
 #  Add multiple directories separated by spaces. For example: = . ./lib ./lib/test ./lib/timer
@@ -97,7 +116,7 @@ MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION   ?=
 #  -  ?= . ./lib
 #  -  ?= . ./lib ./lib/test ./lib/timer
 #  -  += ./libtest
-MF_CONFIGURE_EXCLUDED_DIRECTORYS             ?=
+MF_CONFIGURE_EXCLUDED_DIRECTORYS                ?=
 
 # -# Configuration for excluding files #
 # Add multiple files separated by spaces. For example: = ./src/main.c ./lib/test.c
@@ -106,7 +125,7 @@ MF_CONFIGURE_EXCLUDED_DIRECTORYS             ?=
 #  -  ?= ./test.c
 #  -  ?= ./src/main.c ./lib/test.c ./lib/timer/test.c
 #  -  += ./src/test.c
-MF_CONFIGURE_EXCLUDED_FILES                  ?=
+MF_CONFIGURE_EXCLUDED_FILES                     ?=
 
 # -# Add header file path #
 #  The area specified by the variable MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE needs to be examined.
@@ -115,7 +134,7 @@ MF_CONFIGURE_EXCLUDED_FILES                  ?=
 #  -  ?= .
 #  -  ?= ../src/inc ./lib
 #  -  += ../lib/inc
-MF_CONFIGURE_HEADER_FILE_PATHS               ?=
+MF_CONFIGURE_HEADER_FILE_PATHS                  ?=
 
 #----------------------------
 # -Add configuration
@@ -465,6 +484,15 @@ ifeq ($(strip $(MF_CONFIGURE_TARGET_FILE_NAME)), "")
 endif
 endif
 
+# Checking the configuration requires compiling the source code directory and files.
+ifeq ($(strip $(MF_CONFIGURE_SOURCE_CODE_DIRECTORYS_RECURSION)),)
+ifeq ($(strip $(MF_CONFIGURE_SOURCE_CODE_DIRECTORYS)),)
+ifeq ($(strip $(MF_CONFIGURE_SOURCE_CODE_FILES)),)
+    $(error -> Note: The source code directory and source code files have not been configured.)
+endif
+endif
+endif
+
 # Generate verification for the target file name
 MF_VERIFY_TARGET_FILE_NAME              := $(strip $(if $(strip $(MF_CONFIGURE_TARGET_FILE_NAME)), $(firstword $(MF_CONFIGURE_TARGET_FILE_NAME)), main))
 
@@ -472,9 +500,6 @@ MF_VERIFY_TARGET_FILE_NAME              := $(strip $(if $(strip $(MF_CONFIGURE_T
 MF_VERIFY_TARGET_FILE_OUTPUT_PATH       := $(strip $(if $(strip $(MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH)), $(firstword $(MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH)), .))
 # Verification of the intermediate file output directory
 MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH := $(strip $(if $(strip $(MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH)), $(firstword $(MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH)), .))
-
-# Verification of the root directory for compiling source code
-MF_VERIFY_SOURCE_CODE_DIRECTORYS        := $(strip $(if $(strip $(MF_CONFIGURE_SOURCE_CODE_DIRECTORYS)), $(MF_CONFIGURE_SOURCE_CODE_DIRECTORYS), .))
 
 # Make sure the output directory exists
 $($(MF_PLATFORM_USING_TOOLS_MKDIR) $(MF_VERIFY_TARGET_FILE_OUTPUT_PATH))
@@ -509,17 +534,24 @@ MF_COMPILE_TOOL_SIZE              := $(strip $(MF_CONFIGURE_COMPILE_PATH_PREFIX)
 # -Obtain information about the files in the specified source code directory
 #============================
 # -Find the directory information (subfolders) of all the files in the source code directory path
-MF_SOURCES_ALL_DIRECTORY_PATHS      := $(strip $(sort $(call function_find_subdirectories, $(MF_VERIFY_SOURCE_CODE_DIRECTORYS))))
+MF_SOURCES_FIND_DIRECTORY_PATHS     := $(strip $(sort $(if $(strip $(MF_CONFIGURE_SOURCE_CODE_DIRECTORYS_RECURSION)), $(call function_find_subdirectories, $(MF_CONFIGURE_SOURCE_CODE_DIRECTORYS_RECURSION)),)))
+# -All the folders that need to be added for the table of contents
+MF_SOURCES_ALL_DIRECTORY_PATHS      := $(strip $(sort $(MF_CONFIGURE_SOURCE_CODE_DIRECTORYS) $(MF_SOURCES_FIND_DIRECTORY_PATHS)))
+
 # -Locate the directory information (subfolders) that need to be excluded in the source code directory path
-MF_SOURCES_EXCLUDED_DIRECTORYS      := $(strip $(sort $(if $(strip $(MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION)), $(call function_find_subdirectories, $(MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION)),)))
+MF_SOURCES_FIND_EXCLUDED_DIRECTORYS := $(strip $(sort $(if $(strip $(MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION)), $(call function_find_subdirectories, $(MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION)),)))
 # -All the directories and folders that need to be excluded
-MF_SOURCES_ALL_EXCLUDED_DIRECTORYS  := $(strip $(sort $(MF_CONFIGURE_EXCLUDED_DIRECTORYS) $(MF_SOURCES_EXCLUDED_DIRECTORYS)))
-# -Exclude the specified directory from the source code directory path
+MF_SOURCES_ALL_EXCLUDED_DIRECTORYS  := $(strip $(sort $(MF_CONFIGURE_EXCLUDED_DIRECTORYS) $(MF_SOURCES_FIND_EXCLUDED_DIRECTORYS)))
+
+# -The directory path of the source code that needs to be compiled
 MF_SOURCES_DIRECTORY_PATHS          := $(strip $(sort $(filter-out $(MF_SOURCES_ALL_EXCLUDED_DIRECTORYS), $(MF_SOURCES_ALL_DIRECTORY_PATHS))))
 
 # -The C source files (.c) found in the source code directory path
-MF_SOURCES_C_ALL_FILES              := $(strip $(foreach dir, $(MF_SOURCES_DIRECTORY_PATHS), $(wildcard $(dir)/*.c)))
-MF_SOURCES_C_FILES                  := $(filter-out $(MF_CONFIGURE_EXCLUDED_FILES), $(MF_SOURCES_C_ALL_FILES))
+MF_SOURCES_C_ADD_FILTER_FILES       := $(strip $(filter %.c, $(MF_CONFIGURE_SOURCE_CODE_FILES)))
+MF_SOURCES_C_DEL_FILTER_FILES       := $(strip $(filter %.c, $(MF_CONFIGURE_EXCLUDED_FILES)))
+MF_SOURCES_C_FIND_FILES             := $(strip $(foreach dir, $(MF_SOURCES_DIRECTORY_PATHS), $(wildcard $(dir)/*.c)))
+MF_SOURCES_C_ALL_FILES              := $(strip $(MF_SOURCES_C_ADD_FILTER_FILES) $(MF_SOURCES_C_FIND_FILES))
+MF_SOURCES_C_FILES                  := $(filter-out $(MF_SOURCES_C_DEL_FILTER_FILES), $(MF_SOURCES_C_ALL_FILES))
 MF_SOURCES_C_OBJECTS_FILES_TMP      := $(patsubst %.c, $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o, $(MF_SOURCES_C_FILES))
 MF_SOURCES_C_OBJECTS_FILES          := $(subst //,/,$(subst /./,/,$(MF_SOURCES_C_OBJECTS_FILES_TMP)))
 MF_SOURCES_C_DEPENDENT_FILES        := $(MF_SOURCES_C_OBJECTS_FILES:.o=.d)
@@ -529,8 +561,11 @@ MF_SOURCES_C_FILES_DIRECTORY        := $(dir $(MF_SOURCES_C_FILES))
 MF_SOURCES_C_OBJECTS_DIRECTORY      := $(dir $(MF_SOURCES_C_OBJECTS_FILES))
 
 # -The C++ source files (.cpp) found in the source code directory path
-MF_SOURCES_CPP_ALL_FILES            := $(strip $(foreach dir, $(MF_SOURCES_DIRECTORY_PATHS), $(wildcard $(dir)/*.cpp)))
-MF_SOURCES_CPP_FILES                := $(filter-out $(MF_CONFIGURE_EXCLUDED_FILES), $(MF_SOURCES_CPP_ALL_FILES))
+MF_SOURCES_CPP_ADD_FILTER_FILES     := $(strip $(filter %.cpp, $(MF_CONFIGURE_SOURCE_CODE_FILES)))
+MF_SOURCES_CPP_DEL_FILTER_FILES     := $(strip $(filter %.cpp, $(MF_CONFIGURE_EXCLUDED_FILES)))
+MF_SOURCES_CPP_FIND_FILES           := $(strip $(foreach dir, $(MF_SOURCES_DIRECTORY_PATHS), $(wildcard $(dir)/*.cpp)))
+MF_SOURCES_CPP_ALL_FILES            := $(strip $(MF_SOURCES_CPP_ADD_FILTER_FILES) $(MF_SOURCES_CPP_FIND_FILES))
+MF_SOURCES_CPP_FILES                := $(filter-out $(MF_SOURCES_CPP_DEL_FILTER_FILES), $(MF_SOURCES_CPP_ALL_FILES))
 MF_SOURCES_CPP_OBJECTS_FILES_TMP    := $(patsubst %.cpp, $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o, $(MF_SOURCES_CPP_FILES))
 MF_SOURCES_CPP_OBJECTS_FILES        := $(subst //,/,$(subst /./,/,$(MF_SOURCES_CPP_OBJECTS_FILES_TMP)))
 MF_SOURCES_CPP_DEPENDENT_FILES      := $(MF_SOURCES_CPP_OBJECTS_FILES:.o=.d)
