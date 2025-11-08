@@ -1,333 +1,698 @@
-# A cross-platform universal Makefile file
+# A makefile file that can be used for enterprise development and is not restricted by platforms
 
 
 
-## 1、Project Overview
 
-​	I'm very glad that you can see this open-source project. I hope this project can be of help to you.
-​	This is a project that can be directly used for enterprise development.
+## I. Introduction
 
-​	The path of the project on GitHub : https://github.com/Yezcgithub/makefile
-​	The path of the project on Gitee   : https://gitee.com/yezc/makefile
+​    I'm very glad that you can see this open-source project. I hope this project can be of help to you.
 
-## 2、Project Features
+​    This is a project that can be directly used by enterprises. With just simple configuration information, it can facilitate the management of your projects.
+
+#### 1. Concise
+​    The core consists of only one Makefile file.
+
+#### 2. Highly versatile
+​    Suitable for small projects, medium-sized projects and large projects.
+#### 3. Cross-platform
+​    It can automatically identify the platform it is on and can be used directly without any configuration.
+  -  In Linux, you can simply copy the Makefile file to the project directory and it can be used directly.
+  -  In Windows, the tool is required. You can find it in "./tools/windows_tools". Just copy the Makefile file and the "tools" folder at the same time and paste them into your project.
+
+#### 4. Simple configuration
+​    In the Makefile file, you only need to pay attention to the variables that have the prefix "MF_CONFIGURE_", and a large number of explanations and examples have been added. This makes it very convenient to meet the personalized management requirements for each project.
+#### 5. Use in conjunction with the script
+​    You don't need to modify the Makefile file. You can directly configure your personalized requirements in the script. You can view the build.sh script file (used on Linux) and the build.bat script file (used on Windows) in the project.
+#### 6. Robustness
+​    In the Makefile file, many checks have been added. This can reduce the likelihood of errors when executing "make" and can proactively alert you to any configuration issues.
+#### 7. Learning Materials
+​    If you want to learn or understand the knowledge of Makefile files in the near future, this project is an excellent learning resource. It covers most of the Makefile concepts and has numerous explanatory comments. The make.pdf file is saved in the "./doc" folder, which is also an indispensable learning material for you.
+
+
+
+## II. Download link
+
+| Project source code acquisition platform | Project link             |
+| -------- | -------------------------------------- |
+| github   | https://github.com/Yezcgithub/makefile |
+| gitee    | https://gitee.com/yezc/makefile        |
+| gitcode  | https://gitcode.com/Yeccc/makefile     |
+
+
+
+## III. Functions Description
 
 1. Support cross-platform
+
 2. Support configurable cross-compilation
-3. Support configurable compilation of either C language files or a mixture of C and C++ files
-4. Support configurable generation of target files including executable programs, dynamic libraries, static libraries, and simultaneous generation of dynamic and static libraries
-5. Support configurable generation of release, debug, and simultaneous generation of release and debug versions
-6. Support configurable saving locations for generated target files and generated intermediate files
-7. Support generation of preprocessor files and assembly file commands
-8. Support the configuration of parameters in the script
 
-## 3、Advantages
+3. Supports configurable compilation of only C language files or mixed compilation of C and C++ files.
 
-1. Simple, with only one Makefile file as the core.
-2. Cross-platform, it can automatically identify the current platform and can be used directly without any configuration.
-   - In Linux, you can simply copy the Makefile file to the project directory and it can be used directly.
-   - In Windows, busybox support is required. You can find it in "./tools/windows_tools". Alternatively, you can download the latest version from the busybox official website: https://frippery.org/busybox/. When using the Makefile in Windows, simply copy the Makefile file and the "tools" folder together to your project directory.
-3. The configuration is convenient. In the Makefile file, you only need to pay attention to the variables prefixed with "MF_CONFIGURE_", and a large number of explanations and examples have been added. This makes it very convenient to meet the personalized management requirements for each project.
-4. When used in conjunction with the script, you can directly configure your personalized requirements within the script without modifying the Makefile. You can view the build.sh script file (used on Linux) and the build.bat script file (used on Windows) in the project.
-5. Robustness. In the Makefile, many checks have been added. This can reduce the likelihood of errors during the execution of make and can proactively alert you to any configuration issues.
-6. It is convenient for learning. If you want to learn or understand the knowledge of Makefile files in the near future, this project is an excellent learning resource. Most of the Makefile knowledge points are used in this project, and there are also a large number of comments and explanations. The make.pdf file is saved in the "./doc" folder, which is also an indispensable reference file on your learning journey. Of course, you can also download the latest documentation from the Make website: https://www.gnu.org/software/make/
+4. Supports configurable generation of target files including executable programs, dynamic libraries, static libraries, and the generation of both dynamic and static libraries simultaneously.
 
-## 4、Configuration Instructions
+5. Support configurable generation of release, debug versions, as well as simultaneous generation of both release and debug versions.
 
-### 1、Configuration related to the script
+6. Support for configurable storage locations for the target files and the generated intermediate files
 
-```makefile
-# -#Configuration compilation method#
-#  Parameter = [YES] It can only be compiled by a script. When using make for compilation, it will prompt to use the script for execution (the script must set this variable and the value must not be "YES")
-#  Parameter = [NO]  You can directly use "make" to compile.
-MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT        ?= NO
+7. Support configurable logging of formatted output at compile time
+
+8. Support commands for generating preprocessing files and generating assembly files
+
+9. Support the configuration of parameters in the script
+
+10. Support management of a single Makefile and management of multiple.mk files
+
+11. More configurations...
+
+
+
+## IV. Engineering Structure
+
+```sh
+project
+    ├── doc
+    ├── example
+    │    ├── example1
+    │    ├── example2
+    │    ├── example3
+    │    └── ...
+    ├── src
+    │    └── ...
+    ├── tools
+    │    ├── script
+    │    │    ├── build.bat
+    │    │    └── build.sh
+    │    ├── sub_makefile
+    │    │    ├── add_header.mk
+    │    │    ├── add_library.mk
+    │    │    └── add_source.mk
+    │    ├── windows_tools
+    │    │    └── ...
+    │    └── ...
+    ├── build.bat (Exactly the same as the ./tools/script/build.bat file)
+    ├── build.sh (Exactly the same as the file ./tools/script/build.sh)
+    ├── LICENSE
+    └── Makefile
 ```
 
-### 2、Configuration files and paths
+
+
+## V. Support Commands
+
+For more detailed information, you can obtain it by using the command `make help`.
+
+```sh
+The following is a detailed explanation of all the commands.
+
+  make start_main  - Equivalent to the make build command.
+  make build       - Generating the target file, It is the same as directly executing the make command.
+  make rebuild     - Re-generate the target file.
+  make all         - Generate all files (such as .o, .d, .i, .s and object files).
+  make rebuild_all - Re-generate all files (.o, .d, .i, .s and object files), and debugging is available.
+  make clean       - Delete all intermediate files and target files.
+  make preprocess  - Generate preprocessing file.
+  make assemble    - Generate assembly file.
+  make object      - Generate object file.
+  make version     - Makefile version information.
+  make infoprint   - Print detailed information.
+  make help        - Help Information.
+```
+
+
+
+## VI. Configuration Instructions
+
+### 1、Script-Related Configuration
 
 ```makefile
-# -# Configure to generate the target file name #
-#  Note: Cannot be empty
-#  Example: 
-#  -  ?= main
-#  -  ?= test
-MF_CONFIGURE_TARGET_FILE_NAME              ?= main
+# -# Only script compilation method #
+#  - Parameter = [YES]  Can only be compiled by the script, using make will prompt to use the script to execute (the variable MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT must be set to YES in the script).
+#  - Parameter = [NO]   Can be compiled directly using make.
+MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT ?= NO
+```
 
-# -# Configure the target file directory generation #
-#  The default is the folder where the Makefile is located (./build)
-#  Example: 
-#  -  ?= ./build
-#  -  ?= ./output
-#  -  ?= .
-MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH       ?= ./build
+### 2、Configure the sub-makefile file (.mk)
 
-# -# Configuration for the output directory of intermediate files during compilation #
-#  The default is the source code folder (./build/output)
-#  Example: 
-#  -  ?= ./build/output
-#  -  ?= ./output
-#  -  ?= .
+```makefile
+#  # The configuration requires the use of sub-makefile files (.mk) for multi-file management #
+#    When developing large-scale projects, it is recommended to use this option. For smaller projects, it is not necessary to use it.
+#  - Parameter = [YES]  Use, In the project, a top-level makefile file and the .mk files in each subfolder are used together for management.
+#  - Parameter = [NO]   Do not use, In the project, only one top-level makefile file is used for management (by default).
+MF_CONFIGURE_USING_SUB_MAKEFILE ?= NO
+
+# -# The configuration requires adding the path of the sub-makefile file (including all the subfolders under that path) #
+#  - Note : 
+#    -- It only takes effect when MF_CONFIGURE_USING_SUB_MAKEFILE is set to YES.
+#    -- Add multiple paths, separated by spaces.
+#    -- It will automatically add all the subfolders under this path, without the need to repeatedly add subfolders.
+#  - Example : 
+#    -- ?= ./src ../timer
+#    -- += ./test
+MF_CONFIGURE_ADD_SUB_MAKEFILE_PATHS_AND_SUBPATHS ?=
+
+# -# The configuration requires adding the path of the sub-makefile file #
+#  - Note : 
+#    -- It only takes effect when MF_CONFIGURE_USING_SUB_MAKEFILE is set to "YES".
+#    -- Add multiple paths, separated by spaces.
+#    -- Only add the sub-makefile files (.mk) located in the current directory.
+#  - Example : 
+#    -- ?= .
+#    -- ?= ./src ./src/timer ./src/test
+#    -- += ./test
+MF_CONFIGURE_ADD_SUB_MAKEFILE_PATHS ?=
+```
+
+### 3、Configure output target file information
+
+```makefile
+# -# Set the name of the target file #
+#  - Note : 
+#    -- This option cannot be left blank.
+#    -- The name cannot be the same as that of an existing pseudo-target instruction.
+#  - Example : 
+#    -- ?= main
+#    -- ?= test
+MF_CONFIGURE_TARGET_FILE_NAME ?= main
+
+# -# Output type of the compiled target file #
+#  - Parameter = [RELEASE] Delete the symbol table in the executable file. The symbol table does not affect the program's operation, and it can reduce the size of the program.
+#  - Parameter = [DEBUG]   Keep the symbol table in the executable file. When using gdb for debugging, set it to NO.
+#  - Parameter = [RELEASE_AND_DEBUG] Keep the RELEASE and DEBUG files.
+MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG ?= RELEASE_AND_DEBUG
+
+# -# Compilation output file type #
+#  - Parameter = [EXECUTE]                    Generate an executable program.
+#  - Parameter = [LIBRARY_DYNAMIC]            Generate (.so) dynamic library file.
+#  - Parameter = [LIBRARY_STATIC]             Generate (.a) static library file.
+#  - Parameter = [LIBRARY_STATIC_AND_DYNAMIC] Generate (.a and .so) dynamic and static library files.
+MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE ?= EXECUTE
+```
+
+### 4、Configure output folder information
+
+```makefile
+# -# Set the output directory for the target file #
+#  - Note : 
+#    -- When this option is empty, it is equivalent to ?= .
+#    -- When the option is set to "=.", the generated target file will be placed in the folder where the Makefile is located.
+#  - Example : 
+#    -- ?= ./build
+#    -- ?= ./output
+#    -- ?= .
+MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH ?= ./build
+
+# -# Set the output directory for intermediate files during compilation #
+#  - Note : 
+#    -- When this option is empty, it is equivalent to ?= .
+#    -- When the option is set to "=.", the intermediate file output during compilation will be located in the source code folder.
+#  - Example : 
+#    -- ?= ./build/output
+#    -- ?= ./output
+#    -- ?= .
 MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH ?= ./build/output
-
-# -# The root directory (including subfolders) for compiling the source code #
-# Add multiple root directories separated by spaces, for example: (./src ./lib)
-# Note: It will automatically include all subfolders under the directory, so no need to repeatedly add subfolders
-# Default is the folder where the Makefile is located and all its subfolders (.)
-#  Example: 
-#  -  ?= .
-#  -  ?= ./src ../timer
-#  -  += ./test
-MF_CONFIGURE_SOURCE_CODE_DIRECTORYS        ?= .
-
-# -# The configuration requires excluding all source file directories (including all subdirectories) in this folder#
-#  Add multiple entries separated by spaces. For example: (./src ./lib)
-#  Note: It will automatically include all subdirectories within the directory, so no need to repeatedly add subdirectories
-#  Default is empty
-#  Example: 
-#  -  ?= ./lib
-#  -  ?= ./clib ./lib
-#  -  += ./libtest
-MF_CONFIGURE_EXCLUDED_DIRECTORYS_RECURSION ?=
-
-# -# The configuration requires the exclusion of all source file directories in this folder#
-#  Add multiple directories separated by spaces. For example: = . ./lib ./lib/test ./lib/timer
-#  Note: Only the added directories will take effect
-#  Default is empty
-#  Example: 
-#  -  ?= . ./lib
-#  -  ?= . ./lib ./lib/test ./lib/timer
-#  -  += ./libtest
-MF_CONFIGURE_EXCLUDED_DIRECTORYS           ?=
-
-# -# Configuration for excluding files #
-# Add multiple files separated by spaces. For example: = ./src/main.c ./lib/test.c
-# Default is empty
-#  Example: 
-#  -  ?= ./test.c
-#  -  ?= ./src/main.c ./lib/test.c ./lib/timer/test.c
-#  -  += ./src/test.c
-MF_CONFIGURE_EXCLUDED_FILES                ?=
-
-# -# Add header file paths other than the root directory and its subfolders#
-#  Add multiple paths separated by spaces. For example: = ../ .. /inc /lib/inc
-#  Example: 
-#  -  ?= .
-#  -  ?= ../src/inc ./lib
-#  -  += ../lib/inc
-MF_CONFIGURE_OTHER_INCLUDE_PATHS           ?=
 ```
 
-### 3、Add parameter configuration
+### 5、Configure add source code information
 
 ```makefile
-# -# The third-party libraries used in the program, need to be added during compilation#
-# -L: The directory name where the dependent libraries are located
-# -l: The specific library to be used -L./lib -ltest
-#    When calling standard libraries, such as: if using threads, add -pthread
-#    When calling your own libraries or third-party libraries, you need to write the path of the library
-#    For example: if libtest.so is placed in the directory /aaa/bbb/ccc, then the linking parameter is -L/aaa/bbb/ccc -ltest
-#    If using dynamic libraries, add the library directory to the environment variable
-#    For example: /data/lib/libtest.so, export LD_LIBRARY_PATH=/data/lib:$LD_LIBRARY_PATH
-# -# Standard libraries #
-#  Example: 
-#  -  ?= -lpthread -lrt -lm -ldl
-#  -  += -ldl
-MF_CONFIGURE_USING_STD_LIBRARY_FLAGS       ?= 
+# -# The path where the source files that need to be compiled are located (including all subfolders within this path) #
+#  - Note : 
+#    -- Add multiple paths, separated by spaces.
+#    -- This option will automatically include all the subfolders under the directory, eliminating the need to repeatedly add subfolders.
+#    -- It is not recommended to use this option in large projects. It will search through all subfolders, and when there are too many subfolders, it may affect the compilation efficiency. In large projects, the MF_CONFIGURE_ADD_SOURCE_CODE_PATHS option is recommended.
+#    -- Default to being empty.
+#  - Example : 
+#    -- ?= ./src ../timer
+#    -- += ./testd
+MF_CONFIGURE_ADD_SOURCE_CODE_PATHS_AND_SUBPATHS ?= ./src
 
-# -#The libraries written by oneself or those from third parties#
-#  Example: 
-#  -  ?= -L./lib/timer -ltimer -L./lib/test -ltest
-#  -  += -L./lib/media -lmedia
-#  -  += -L./lib -ltest -ltest1 -ltest2
-MF_CONFIGURE_USING_LIBRARY_FLAGS           ?=
+# -# Add the path of the source files that need to be compiled #
+#  - Note : 
+#    -- Add multiple directories separated by spaces.
+#    -- Only effective for the currently added directory.
+#  - Example : 
+#    -- ?= .
+#    -- ?= ./src ./src/timer
+#    -- += ./test
+MF_CONFIGURE_ADD_SOURCE_CODE_PATHS ?=
 
-# -# Add User Macro Definitions #
-#  These macros can be used in the application
-#  = __YE           Equivalent to C language #define __YE
-#  = __YE=1         Equivalent to C language #define __YE 1
-#  = __YE="hello"   Equivalent to C language #define __YE "hello"
-#  Example: 
-#  -  ?= __YE __CC
-#  -  += __YECC=hello
-#  -  += __YECC_NUM=1
-#  -  += APP_VERSION=1.0.0
-MF_CONFIGURE_ADD_USER_DEFINE               ?=
+# -# Add the source code files that need to be compiled #
+#  - Note : 
+#    -- Add multiple source code files, separated by spaces.
+#  - Example : 
+#    -- ?= ./test.c
+#    -- ?= ./src/main.c ./lib/test.c ./lib/timer/test.c
+#    -- += ./src/test.c
+MF_CONFIGURE_ADD_SOURCE_CODE_FILES ?=
 ```
 
-### 4、Set file compilation options
+### 6、Configure delete (exclude) source code information
 
 ```makefile
-# -#Configure the header file path with the include range# 
-#  Parameter = [ONLY_CONFIGURE_PATHS]    Only the paths that are configured through the MF_CONFIGURE_OTHER_HEADER_FILE_PATHS variable.
-#  Parameter = [BUILD_SOURCE_CODE_PATHS] It includes the source file directories that were not excluded in addition to ONLY_CONFIGURE_PATHS.(Source code compilation path)
-#  Parameter = [ALL_SOURCE_CODE_PATHS]   It includes all the source file directories in addition to ONLY_CONFIGURE_PATHS.
-#  Parameter = [ALL_PATHS]               It includes the excluded file directories in addition to ALL_SOURCE_CODE_PATHS.
-MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE  ?= ALL_SOURCE_CODE_PATHS
+# -# Delete (exclude) the path where the compilation source files are located (including all subfolders within that path) #
+#  - Note : 
+#    -- Add multiple paths, separated by spaces.
+#    -- This option will automatically include all the subfolders under the directory, eliminating the need to repeatedly add subfolders.
+#    -- It is not recommended to use this option in large projects. It will search through all subfolders, and when there are too many subfolders, it may affect the compilation efficiency. In large projects, the MF_CONFIGURE_DELETE_SOURCE_CODE_PATHS option is recommended.
+#    -- Default to being empty.
+#  - Example : 
+#    -- ?= ./lib
+#    -- ?= ./clib ./lib
+#    -- += ./libtest
+MF_CONFIGURE_DELETE_SOURCE_CODE_PATHS_AND_SUBPATHS ?=
 
-# -#Output type of the compiled target file#
-# Parameter = [RELEASE] Remove the symbol table from the executable file. The symbol table does not affect the program's operation and can reduce the file size.
-# Parameter = [DEBUG] Keep the symbol table in the executable file. Set to NO when using gdb for debugging.
-# Parameter = [RELEASE_AND_DEBUG] Keep both the RELEASE and DEBUG executable files.
-MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG       ?= RELEASE_AND_DEBUG
+# -# Delete (exclude) the path where the compilation source files are located #
+#  - Note : 
+#    -- Add multiple paths, separated by spaces.
+#    -- Only effective for the currently added directory.
+#  - Example : 
+#    -- ?= ./lib
+#    -- ?= ./lib ./lib/test ./lib/timer
+#    -- += ./libtest
+MF_CONFIGURE_DELETE_SOURCE_CODE_PATHS ?=
 
-# -#Compilation output file type#
-# Parameter = [EXECUTE]                    Generates an executable program
-# Parameter = [LIBRARY_DYNAMIC]            Generates (.so) dynamic library file
-# Parameter = [LIBRARY_STATIC]             Generates (.a) static library file
-# Parameter = [LIBRARY_STATIC_AND_DYNAMIC] Generates (.a and .so) dynamic-static library file
-MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE       ?= EXECUTE
-
-# -#Compile the original file type#
-# Parameter = [CPP_TYPE] Compiles both C and CPP files
-# Parameter = [C_TYPE]   Compiles only C files
-MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE    ?= CPP_TYPE
-
-# -#Whether to use static compilation (only applicable for generating executable programs)#
-# Parameter = [YES] Use static compilation
-# Parameter Explanation: During compilation, all dependent files will be included. It has less dependence on the running environment and is highly compatible; however, the generated program is relatively large.
-# Parameter = [NO] Use dynamic compilation
-# Parameter Explanation: After compilation, the program size is smaller and it relies on dynamic libraries. It cannot run independently.
-MF_CONFIGURE_USING_STATIC_COMPILATION      ?= NO
-
-# -#Delete intermediate files after compilation(.d, .o, .i, .ii, .s)#
-# Parameter = [YES] Delete intermediate files. Each compilation will be a full compilation.
-# Parameter = [NO] Keep intermediate files.
-MF_CONFIGURE_DELETING_INTERMEDIATE_FILES   ?= NO
-
-# -# The console log during the compilation process is displayed in a formatted manner#
-# Parameter = [YES] Displays the formatted log, allowing the filenames being compiled to be printed neatly
-# Parameter = [NO]  Prints the default log
-MF_CONFIGURE_USING_FORMATTEND_LOG          ?= YES
+# -# Delete (exclude) the source code files for compilation #
+#  - Note : 
+#    -- Add multiple source code files, separated by spaces.
+#  - Example : 
+#    -- ?= ./test.c
+#    -- ?= ./src/main.c ./lib/test.c ./lib/timer/test.c
+#    -- += ./src/test.c
+MF_CONFIGURE_DELETE_SOURCE_CODE_FILES ?=
 ```
 
-### 5、Debugging options
+### 7、Configure header files information
 
 ```makefile
-#  += -g        During compilation, generate debugging information
-#  += -gstabs   This option claims debugging information in stabs format, but does not include gdb debugging information.
-#  += -gstabs+  This option claims debugging information in stabs format and includes additional debugging information specifically for gdb.
-#  += -ggdb     This option will generate as much gdb-compatible debugging information as possible.
-#  += -glevel   Request to generate debugging information, and specify the level of information needed using the 'level' parameter. The default level value is 2.
-MF_CONFIGURE_C_FLAGS      += -g
-MF_CONFIGURE_CPP_FLAGS    += -g
+# -# Configure the path of header files to include the range # 
+#  - Parameter = [ONLY_CONFIGURE_PATHS]    Only including the paths that are configured through the MF_CONFIGURE_ADD_HEADER_FILE_PATHS_AND_SUBPATHS or MF_CONFIGURE_ADD_HEADER_FILE_PATHS variables.
+#  - Parameter = [BUILD_SOURCE_CODE_PATHS] In addition to ONLY_CONFIGURE_PATHS, it also includes the source file paths (source code compilation paths) that have not been deleted (excluded).
+#  - Parameter = [ALL_SOURCE_CODE_PATHS]   Based on ONLY_CONFIGURE_PATHS, it also includes all the source file paths.
+#  - Parameter = [ALL_PATHS]               Based on ALL_SOURCE_CODE_PATHS, it also includes the deleted (excluded) paths and library paths.
+MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE ?= ALL_SOURCE_CODE_PATHS
+
+# -# Add header file paths (including all subfolders under this path) #
+#  - Note : 
+#    -- The area specified by the variable MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE needs to be examined.
+#    -- Add multiple paths, separated by spaces.
+#    -- This option will automatically include all the subfolders under the directory, eliminating the need to repeatedly add subfolders.
+#    -- It is not recommended to use this option in large projects. It will search through all subfolders, and when there are too many subfolders, it may affect the compilation efficiency. In large projects, the MF_CONFIGURE_ADD_HEADER_FILE_PATHS option is recommended.
+#    -- Default to being empty.
+#  - Example : 
+#    -- ?= ../src/inc ./lib
+#    -- += ../lib/inc
+MF_CONFIGURE_ADD_HEADER_FILE_PATHS_AND_SUBPATHS ?= 
+
+# -# Add header file paths #
+#  - Note : 
+#    -- The area specified by the variable MF_CONFIGURE_HEADER_FILE_PATH_INCLUDE_RANGE needs to be examined.
+#    -- Add multiple paths, separated by spaces.
+#    -- This option will only take effect for the currently added directory.
+#    -- Default to being empty.
+#  - Example : 
+#    -- ?= .
+#    -- ?= ../src/inc ./lib ./lib/test/inc
+#    -- += ../lib/inc
+MF_CONFIGURE_ADD_HEADER_FILE_PATHS ?=
 ```
 
-### 6、Error and Alert Options
+### 8、Configuration library information
 
 ```makefile
-#  += -w , To disable all compilation warnings
-#  += -Wall , To enable all common warnings (unused variables, uninitialized variables, undeclared functions, etc.)
-#  += -Wextra , To add additional warnings beyond -Wall (such as empty parameters, implicit loss of type conversions, etc.)
-#  += -Wunused-function , To detect static functions that are declared but unused
-#  += -Wunused-label , To detect unused labels (such as goto jump labels remaining after deletion)
-#  += -Wshadow , To give a warning when a local variable shadows another local variable or a global variable
-#  += -Wunreachable-code , To give a warning if the compiler detects code that will never be executed
-#  += -Wundef , To give a warning when a symbol that has not been defined appears in #if
-#  += -Werror , To convert all warnings into errors, terminating the compilation process when a warning occurs
-#  += -Wfatal-errors , To stop when the first error is encountered
-#  += -Wconversion , To give a warning for implicit type conversions (such as int to short, which may lose precision)
-#  += -Wstrict-prototypes , To require explicit parameter types in function declarations (disable the form of int foo())
-#  += -pedantic , To allow all warnings listed in the ANSI/ISO C standard
-#  += -pedantic-errors , To allow all errors listed in the ANSI/ISO C standard
-#  += -Wno-conversion , To disable warnings for implicit type conversions
-#  += -Wno-unused-variable , To disable warnings for unused variables
-#  += -Wno-unused-label , To disable warnings for unused labels
-#  += -Wno-unused-variable , To disable warnings for unused variables
-#  += -Wno-unused-label , To disable warnings for unused labels
-#  += -Wno-unused-function , To disable warnings for unused functions
-MF_CONFIGURE_C_FLAGS      += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion -Wstrict-prototypes
-MF_CONFIGURE_CPP_FLAGS    += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion -Wstrict-prototypes
+# -# Add the standard library name #
+#  - Note : 
+#    -- Add the standard library name.
+#    -- Add multiple libraries, separated by spaces.
+#  - Example : 
+#    -- ?= pthread rt m dl
+#    -- += dl
+#    -- += m
+MF_CONFIGURE_ADD_STD_LIBRARY_NAME ?=
+
+# -# Add the path of the library you wrote yourself or a third-party library (including all subfolders under that path) #
+#  - Note : 
+#    -- Add multiple paths, separated by spaces.
+#    -- This option will automatically include all the subfolders under the directory, eliminating the need to repeatedly add subfolders.
+#    -- It is not recommended to use this option in large projects. It will search through all subfolders, and when there are too many subfolders, it may affect the compilation efficiency. In large projects, the MF_CONFIGURE_ADD_USER_LIBRARY_PATHS option is recommended.
+#  - Example : 
+#    -- ?= ./lib/timer
+#    -- ?= ./src/lib
+#    -- += ../lib
+MF_CONFIGURE_ADD_USER_LIBRARY_PATHS_AND_SUBPATHS ?= 
+
+# -# Add the path of the library you wrote yourself or a third-party library #
+#  - Note : 
+#    -- Add multiple paths, separated by spaces.
+#    -- This option will only take effect for the currently added directory.
+#  - Example : 
+#    -- ?= ./lib/timer ./lib ./lib/test
+#    -- ?= ./src/lib
+#    -- += ../lib
+MF_CONFIGURE_ADD_USER_LIBRARY_PATHS ?=
+
+# -# Add the name of the library you wrote yourself or a third-party library #
+#  - Note : 
+#    -- Add the name of the library you wrote yourself or a third-party library.
+#    -- In Linux, libtimer.so = timer
+#    -- In Linux, libtest.a   = test
+#    -- In Windows, media.lib = media
+#    -- Add multiple libraries, separated by spaces.
+#  - Example : 
+#    -- ?= timer media test
+#    -- += timer
+#    -- += test
+MF_CONFIGURE_ADD_USER_LIBRARY_NAME ?=
 ```
 
-### 7、Other parameter settings
+### 9、Configure user macro information
 
 ```makefile
+# -# Add user macro definitions #
+#  - Note : 
+#    -- You can use macros in your application.
+#    -- = __YE         Equivalent to C language #define __YE
+#    -- = __YE=1       Equivalent to C language #define __YE 1
+#    -- __YE=\"hello\" Equivalent to C language #define __YE "hello"
+#  - Example : 
+#    -- ?= __YE __CC __VERSION=\"1.0.0\"
+#    -- += __YECC=\"hello\"
+#    -- += __YECC_NUM=1
+#    -- += APP_VERSION=\"1.0.0\"
+MF_CONFIGURE_ADD_USER_DEFINE ?=
+```
 
-#----------------------------
-# -Dynamic library export symbols
-#----------------------------
-#  It is recommended to disable in the RELEASE version.
-#  += -rdynamic  Dynamic library export symbols
-#MF_CONFIGURE_C_FLAGS      += -rdynamic
-#MF_CONFIGURE_CPP_FLAGS    += -rdynamic
+### 10、Compilation configuration
 
-#----------------------------
-# -Specified compiler
-#----------------------------
-#MF_CONFIGURE_C_FLAGS      += -std=c99
-#MF_CONFIGURE_CPP_FLAGS    += -std=c++98
+```makefile
+# -# Compile original file type #
+#  - Parameter = [CPP_TYPE] Use C++ compiler to compile C and C++ files.
+#  - Parameter = [C_TYPE]   Use C compiler to compile C files only.
+MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE ?= C_TYPE
 
-#----------------------------
-# -Compiler optimization level
-#----------------------------
-# += -O0 No optimization, retains complete debugging information, code execution is the slowest, suitable for development and debugging phases
-# += -O1 Basic optimization, slightly improves performance, does not affect debugging, debugging version with low performance requirements
-# += -O2 Medium optimization, fully enables security optimizations, significantly improves performance, compile time is controllable, default choice for release versions
-# += -O3 Highly optimized, may increase code size and compilation time, occasionally has compatibility issues, code execution speed is fast, suitable for specific scenarios such as high-performance computing
-#MF_CONFIGURE_C_FLAGS      += -O2
-#MF_CONFIGURE_CPP_FLAGS    += -O2
+# -# Whether to use static compilation (only applicable to generating executable programs) #
+#  - Parameter = [YES] Using static compilation, all the dependent files will be included during the compilation process. It has less dependence on the running environment and is highly compatible; however, the generated program is relatively large.
+#  - Parameter = [NO]  Using dynamic compilation, the compiled program has a relatively small size. It relies on dynamic libraries and cannot run independently.
+MF_CONFIGURE_USING_STATIC_COMPILATION ?= NO
 
-#----------------------------
-# -Other options
-#----------------------------
-#MF_CONFIGURE_C_FLAGS      +=
-#MF_CONFIGURE_CPP_FLAGS    +=
+# -# Whether to delete intermediate files (.d, .o, .i, .ii, .s) after compilation #
+#  - Parameter = [YES] Delete intermediate files, every compilation will be a full compilation.
+#  - Parameter = [NO]  Keep intermediate files.
+MF_CONFIGURE_DELETING_INTERMEDIATE_FILES ?= NO
 
-#----------------------------
-# -Options for generating the .o file during compilation
-#----------------------------
-# -MMD: Generate dependency files, automatically generate .d dependency files, such as main.c → main.d
-# -MP: Add a non-dependent pseudo-target for each header file in the generated .d file. This prevents make from reporting errors when the header file is deleted
-# -fPIC: Generate position-independent code, used for compiling dynamic libraries. However, this is generally not used here
-MF_CONFIGURE_C_OBJECTS_FLAGS      ?= -MMD -MP
-MF_CONFIGURE_CPP_OBJECTS_FLAGS    ?= -MMD -MP
+# -# Whether to create explicit declarations before compilation #
+#  - Parameter = [YES] Use explicit declarations, which is not recommended. Creating explicit rules before compilation may slow down the compilation process, especially when there are many source files. Make version V3.81 or above is required to use this option. Otherwise, it will not take effect.
+#  - Parameter = [NO]  Do not use explicit declarations, which is recommended.
+MF_CONFIGURE_USE_EXPLICIT_DECLARATION ?= NO
+```
 
-#----------------------------
-# -Compilation tool configuration
-#----------------------------
-# - Specifies the path prefix for the used compiler tool
-#  By default, it is empty. When compiling, the resulting program will be an executable for the current system
-#  For cross-compilation, the path prefix of the compiler tool must be specified
-#  Example:
-#  -  ?=
-#  -  ?= arm-linux-
-#  -  ?= arm-linux-gnueabi-
-#  -  ?= arm-linux-gnueabihf-
-MF_CONFIGURE_COMPILE_PATH_PREFIX   ?= 
+### 11、Log configuration
 
-#----------------------------
-# -Platform configuration
-#----------------------------
-# - This determines in which platform the makefile is used.
-# By default, it is set to ?= $(OS), which can automatically detect whether it is on a Windows system.
-# Of course, it can also be specified manually directly.
-#  Example:
-#  -  auto    ：$(OS)
-#  -  windows ：?= WINDOWS or ?= Windows_NT
-#  -  linux   ：?= LINUX   or ?=
-MF_CONFIGURE_PLATFORM_OS          ?= $(OS)
+```makefile
+# -# The compilation process console log is displayed in a formatted manner #
+#  - Parameter = [YES] Using formatted display, which can print the currently compiling file name in a neatly formatted manner.
+#  - Parameter = [NO]  Print compilation logs.
+MF_CONFIGURE_USING_FORMATTEND_LOG ?= YES
 
-#----------------------------
-# -Configuration of the busybox tool
-#----------------------------
-# This is mainly applicable to the situation where makefile is used in Windows.
-# In Linux, this setting is not necessary and can be omitted, such as ? =
-# When using makefile in Windows, the busybox tool path must be configured.
-# You can find busybox.exe in the ./tools/ directory.
-# You can also download it from the busybox official website at https://frippery.org/busybox/
-#  Example:
-#  -  ?= "./tools/windows_tools/busybox"
-#  -  ?= "./tools/busybox"
-MF_CONFIGURE_BUSYBOX_TOOLS         ?= "./tools/windows_tools/busybox"
+# -# Compile log using formatted display strings(.c -> .o) #
+#  - Note : 
+#    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
+#  - Example : 
+#    -- ?= CC
+#    -- ?= [CC]
+#    -- ?= Building
+#    -- ?= Compiling
+MF_CONFIGURE_FORMATTEND_LOG_CC_OBJECT_SHOW_STRING ?= CC
+
+# -# Compile log using formatted display strings(.cpp -> .o) #
+#  - Note : 
+#    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
+#  - Example : 
+#    -- ?= CPP
+#    -- ?= [CPP]
+#    -- ?= Building
+#    -- ?= Compiling
+MF_CONFIGURE_FORMATTEND_LOG_CPP_OBJECT_SHOW_STRING ?= CPP
+
+# -# Compile log using formatted display strings(.c -> .s) or (.cpp -> .s) #
+#  - Note : 
+#    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
+#  - Example : 
+#    -- ?= AS
+#    -- ?= [AS]
+#    -- ?= [ASSEMBLY]
+#    -- ?= Building
+#    -- ?= Compiling
+MF_CONFIGURE_FORMATTEND_LOG_ASSEMBLE_SHOW_STRING ?= AS
+
+# -# Compile log using formatted display strings(.c -> .i) or (.cpp -> .ii) #
+#  - Note : 
+#    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
+#  - Example : 
+#    -- ?= PR
+#    -- ?= [PR]
+#    -- ?= [PREPROCESS]
+#    -- ?= Building
+#    -- ?= Compiling
+MF_CONFIGURE_FORMATTEND_LOG_PREPROCESS_SHOW_STRING ?= PR
+
+# -# Generate a log for the link packaging process of the static library, using formatted display strings #
+#  - Note : 
+#    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
+#  - Example : 
+#    -- ?= AR
+#    -- ?= [AR]
+#    -- ?= linking
+#    -- ?= package
+MF_CONFIGURE_FORMATTEND_LOG_LIBRARY_STATIC_SHOW_STRING ?= AR
+
+# -# Generate dynamic library logs by packaging the links, using formatted display strings #
+#  - Note : 
+#    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
+#  - Example : 
+#    -- ?= LD
+#    -- ?= [LD]
+#    -- ?= linking
+#    -- ?= package
+MF_CONFIGURE_FORMATTEND_LOG_LIBRARY_DYNAMIC_SHOW_STRING ?= LD
+
+# -# Generate logs for the link packaging process of the executable program, using formatted display strings #
+#  - Note : 
+#    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
+#  - Example : 
+#    -- ?= LD
+#    -- ?= [LD]
+#    -- ?= linking
+#    -- ?= package
+MF_CONFIGURE_FORMATTEND_LOG_EXECUTE_SHOW_STRING ?= LD
+```
+
+### 12、Debugging options
+
+```makefile
+#  - Note : 
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- += -g        During the compilation process, debugging information is generated.
+#    -- += -gstabs   This option claims debugging information in the stabs format, but does not include gdb debugging information. 
+#    -- += -gstabs+  This option claims the debugging information in the stabs format, and also includes additional debugging information that is only for use by gdb.
+#    -- += -ggdb     This option will generate as much usable debugging information for gdb as possible.
+#    -- += -glevel   Request to generate debugging information, and specify the amount of information required using the "level" parameter. The default level value is 2.
+#    -- += ...
+#  - Example : 
+#    -- += -g
+#    -- += -ggdb
+MF_CONFIGURE_C_FLAGS   ?= -g
+MF_CONFIGURE_CPP_FLAGS ?= -g
+```
+
+### 13、Error and Alert Options
+
+```makefile
+#  - Note : 
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- += -w To disable all compilation warnings
+#    -- += -Wall To enable all common warnings (unused variables, uninitialized variables, undeclared functions, etc.)
+#    -- += -Wextra To add additional warnings beyond -Wall (such as empty parameters, implicit loss of type conversions, etc.)
+#    -- += -Wunused-function To detect static functions that are declared but unused
+#    -- += -Wunused-label To detect unused labels (such as goto jump labels remaining after deletion)
+#    -- += -Wshadow When a local variable shadows another local variable or a global variable, give a warning
+#    -- += -Wunreachable-code If the compiler detects code that will never be executed, give a warning
+#    -- += -Wundef When an undefined symbol appears in #if, give a warning.
+#    -- += -Werror To convert all warnings to errors, terminating the compilation process when a warning occurs
+#    -- += -Wfatal-errors Stop on the first error
+#    -- += -Wconversion To warn about implicit type conversions (such as int to short, which may lose precision)
+#    -- += -Wstrict-prototypes To require explicit parameter types in function declarations (disable int foo() form)
+#    -- += -pedantic To allow all warnings listed in the ANSI/ISO C standard
+#    -- += -pedantic-errors To allow all errors listed in the ANSI/ISO C standard
+#    -- += -Wno-conversion To disable warnings about implicit type conversions
+#    -- += -Wno-unused-variable To disable warnings about unused variables
+#    -- += -Wno-unused-label To disable warnings about unused labels
+#    -- += -Wno-unused-variable To disable warnings about unused variables
+#    -- += -Wno-unused-label To disable warnings about unused labels
+#    -- += -Wno-unused-function To disable warnings about unused functions
+#    -- += ...
+#  - Example : 
+#    -- += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+#    -- += -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+#    -- += -Wall -Werror
+#    -- += -Wall
+MF_CONFIGURE_C_FLAGS   += -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+MF_CONFIGURE_CPP_FLAGS += -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+```
+
+### 14、Dynamic library export symbols
+
+```makefile
+#  - Note : 
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- It is recommended to disable in the RELEASE version.
+#    -- += -rdynamic Dynamic library export symbols
+#  - Example : 
+#    -- += -rdynamic
+#    -- +=
+#MF_CONFIGURE_C_FLAGS   += -rdynamic
+#MF_CONFIGURE_CPP_FLAGS += -rdynamic
+```
+
+### 15、Specify the compiler version
+
+```makefile
+#  - Note : 
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- += -std=c99
+#    -- += -std=c++11
+#  - Example : 
+#    -- += -std=c99
+#    -- += -std=c++11
+#    -- +=
+
+#MF_CONFIGURE_C_FLAGS   += -std=c99
+#MF_CONFIGURE_CPP_FLAGS += -std=c++11
+```
+
+### 16、Compiler optimization level
+
+```makefile
+#  - Note : 
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- += -O0 No optimization, retains complete debugging information, code execution is the slowest, suitable for development and debugging phases.
+#    -- += -O1 Basic optimization, slightly improves performance, does not affect debugging, suitable for debugging versions with low performance requirements.
+#    -- += -O2 Medium optimization, fully enables security optimizations, significantly improves performance, compile time is controllable, default choice for release versions.
+#    -- += -O3 Highly optimized, may increase code size and compilation time, occasionally has compatibility issues, code execution speed is fast, suitable for specific scenarios such as high-performance computing.
+#  - Example : 
+#    -- += -O2
+#    -- += -O1
+#    -- += -O0
+#MF_CONFIGURE_C_FLAGS   += -O2
+#MF_CONFIGURE_CPP_FLAGS += -O2
+```
+
+### 17、Other flags options
+
+```makefile
+#  - Note : 
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- +=
+#  - Example : 
+#    -- +=
+#MF_CONFIGURE_C_FLAGS   +=
+#MF_CONFIGURE_CPP_FLAGS +=
+```
+
+### 18、Compilation options that are applied to generate the .o file
+
+```makefile
+#  - Note : 
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- ?= -MMD  : Generate dependency files, automatically generate .d dependency files, such as main.c → main.d.
+#    -- ?= -MP   : In the generated .d file, add an independent pseudo-target for each header file. This ensures that make does not report an error when the header file is deleted.
+#    -- ?= -fPIC : Generate position-independent code, which is used for compiling dynamic link libraries, but it is not commonly used here.
+#  - Example : 
+#    -- ?= -MMD -MP
+#    -- ?= -MMD
+#    -- ?= -MP
+MF_CONFIGURE_C_OBJECTS_FLAGS   ?= -MMD -MP
+MF_CONFIGURE_CPP_OBJECTS_FLAGS ?= -MMD -MP
+```
+
+### 19、Compilation tool configuration
+
+```makefile
+# -# Specify the path prefix for the used compilation tool #
+#  - Note : 
+#    -- Default value is empty.
+#    -- When cross-compiling, the path prefix of the compilation tool must be specified.
+#    -- When empty, the compiled program is the current system executable program.
+#  - Example : 
+#    -- ?= .
+#    -- ?= arm-linux-
+#    -- ?= arm-linux-gnueabi-
+#    -- ?= arm-linux-gnueabihf-
+#    -- ?= ./tools/compile_tools/arm-linux-gnueabihf-
+MF_CONFIGURE_COMPILE_PATH_PREFIX ?= 
+```
+
+### 20、Platform configuration
+
+```makefile
+# -# The platform used for configuring the makefile #
+#  - Note : 
+#    -- This determines on which platform the makefile is being used.
+#    -- By default, it is set to ?= $(OS), which can automatically detect whether it is on a Windows system. Of course, it can also be specified manually directly.
+#    -- auto    ：$(OS)
+#    -- windows ：?= WINDOWS or ?= Windows_NT
+#    -- linux   ：?= LINUX   or ?=
+#  - Example : 
+#    -- ?= $(OS)
+#    -- ?= WINDOWS
+#    -- ?= LINUX
+MF_CONFIGURE_PLATFORM_OS ?= $(OS)
+```
+
+### 21、Configuration tool
+
+```makefile
+# -# Configure the Windows tool path #
+#  - Note : 
+#   -- This is mainly applicable to the situation where makefile is used in Windows.
+#   -- In Linux, this setting is not necessary and can be omitted, such as ?=
+#   -- When using makefile in Windows, the Windows tool path must be configured.
+#   -- You can find the tools in the ./tools/ directory.
+#  - Example : 
+#    -- ?= ./tools/windows_tools_x86/usr/bin/
+#    -- ?= ./tools/windows_tools_arm/usr/bin/
+#    -- ?= ./tools/windows_tools/usr/bin/
+#    -- ?= ./tools
+MF_CONFIGURE_WINDOWS_TOOLS ?= ./tools/windows_tools/usr/bin/
+
+# -# Configure the Linux tool path #
+#  - Note : 
+#   -- This is mainly applicable to the situation where makefile is used in Linux.
+#   -- In Windows, this setting is not necessary and can be omitted, such as ?=
+#   -- When using makefile in Linux, normally this option (such as ?=) does not need to be configured. Only when the system version is too low or some tool instructions are not fully functional, do you need to configure the tool path.
+#   -- You can find the tools in the ./tools/ directory.
+#  - Example : 
+#    -- ?= ./tools/linux_tools/usr/bin/
+#    -- ?= ./tools
+MF_CONFIGURE_LINUX_TOOLS ?=
+
+# -# The shell tool used for configuration #
+#  - Note : 
+#    -- This determines the tools that the makefile uses when executing shell commands.
+#    -- By default, it is set to ?= SH
+#  - Parameter = [SH]   Use "sh" to execute the shell command tool
+#  - Parameter = [BASH] Use "bash" to execute the shell command tool
+MF_CONFIGURE_USE_SHELL_TOOLS ?= BASH
 ```
 
 
 
-# The MIT License (MIT)
+## VII. License
 
-\# https://mit-license.org/
+The MIT License (MIT)
 
-Copyright © 2025 <copyright holders>
+https://mit-license.org/
+
+Copyright © 2025 <Yezc/Makefile>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
