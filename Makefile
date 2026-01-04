@@ -7,10 +7,6 @@
 # @Description : A cross-platform Makefile for enterprise and general development
 # This Makefile is suitable for small, medium, and large projects
 
-# https://github.com/Yezcgithub/makefile
-# https://gitee.com/yezc/makefile
-# https://gitcode.com/Yeccc/makefile
-
 #============================
 # - License
 #============================
