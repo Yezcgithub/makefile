@@ -631,6 +631,14 @@ MF_VERSION_SEQUENTIAL_EXEC_TARGET := 4.4
 #Suppress display of executed commands.
 #$(VERBOSE).SILENT:
 
+#----------------------------
+# - Script-related configuration verification
+#----------------------------
+# Check if the compilation is launched only by the script
+ifeq ($(firstword $(strip $(MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT))), YES)
+    $(error -> Note: You have set it to be launched only by the script. Please use the script for compilation.)
+endif
+
 #============================
 # - Cross-platform Support
 #============================
@@ -943,14 +951,6 @@ endif
 #============================
 # - Parameter verification
 #============================
-#----------------------------
-# - Script-related configuration verification
-#----------------------------
-# Check if the compilation is launched only by the script
-ifeq ($(firstword $(strip $(MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT))), YES)
-    $(error -> Note: You have set it to be launched only by the script. Please use the script for compilation.)
-endif
-
 #----------------------------
 # - Tool-related configuration verification
 #----------------------------
