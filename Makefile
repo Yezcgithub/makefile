@@ -1638,6 +1638,7 @@ infoprint:
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) ''
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) ' - Use the c compiler tool: $(MF_COMPILE_TOOL_CC)'
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) ' - Use the c++ compiler tool: $(MF_COMPILE_TOOL_CPP)'
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) ' - Use the linking tool: $(MF_COMPILE_TOOL_LD)'
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) ' - Use the archiver tool: $(MF_COMPILE_TOOL_AR)'
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) ' - Use the strip tool: $(MF_COMPILE_TOOL_STRIP)'
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) ' - The currently in-use compilation tool: $(MF_PARAM_COMPILE_TOOL_CC)'
