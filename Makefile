@@ -1215,8 +1215,8 @@ endif
 #============================
 # - The first pseudo-target instruction, "make" is executed.
 #============================
-MF_PHONY = start_main
-start_main : build
+MF_PHONY = start_build
+start_build : build
 
 #============================
 # - Explicitly declare the dependent file functions
@@ -1662,7 +1662,7 @@ help:
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) 'The current version of make being used: $(MAKE_VERSION)'
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) 'The following is a detailed explanation of all the commands.'
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) ''
-	@$(MF_PLATFORM_USING_TOOLS_ECHO) '  make start_main  - Equivalent to the 'make build' command.'
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) '  make start_build - Equivalent to the 'make build' command.'
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) '  make build       - Generating the target file, It is the same as directly executing the 'make' command.'
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) '  make rebuild     - Re-generate the target file.'
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) '                     Note: For versions of make v4.4 or higher,it will re-generate every time. Otherwise, it will be the same as the 'make build' command.'
