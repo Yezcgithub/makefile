@@ -1124,7 +1124,7 @@ MF_PARAM_ALL_USING_LIBRARY_PATHS    := $(strip $(sort $(MF_CONFIGURE_ADD_USER_LI
 MF_PARAM_USING_LIBRARY_PATHS        := $(strip $(if $(MF_PARAM_ALL_USING_LIBRARY_PATHS), $(addprefix -L, $(MF_PARAM_ALL_USING_LIBRARY_PATHS)),))
 
 # Library file information (library file prefix -l)
-MF_PARAM_ALL_USING_LIBRARY_NAME     := $(strip $(strip $(MF_CONFIGURE_ADD_STD_LIBRARY_NAME)) $(strip $(MF_CONFIGURE_ADD_USER_LIBRARY_NAME)))
+MF_PARAM_ALL_USING_LIBRARY_NAME     := $(strip $(MF_CONFIGURE_ADD_USER_LIBRARY_NAME) $(MF_CONFIGURE_ADD_STD_LIBRARY_NAME))
 MF_PARAM_USING_LIBRARY_NAME         := $(strip $(if $(MF_PARAM_ALL_USING_LIBRARY_NAME), $(addprefix -l, $(MF_PARAM_ALL_USING_LIBRARY_NAME)),))
 
 # Library path information and library file information
