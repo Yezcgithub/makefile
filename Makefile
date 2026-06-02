@@ -290,6 +290,23 @@ MF_CONFIGURE_ADD_USER_DEFINE ?=
 #  - Parameter = [C_TYPE]   Use C compiler to compile C files only.
 MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE ?= C_TYPE
 
+# -# Use the C compiler for mixed compilation #
+#  - Note : 
+#    -- This option is only effective when MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is set to C_TYPE.
+#    -- If it is 'YES', the 'stdc++' library will be automatically added to the link.
+#    -- If it is "YES", then the .h file must contain the following macros; otherwise, an error will occur during the linking process.
+#       --- #ifdef __cplusplus
+#       --- extern "C" {
+#       --- #endif
+#
+#       --- #ifdef __cplusplus
+#       ---  } /*extern "C"*/
+#       --- #endif
+#
+#  - Parameter = [YES] Use the C compiler to perform mixed compilation of C and C++ source codes
+#  - Parameter = [NO]  Only compile the C files
+MF_CONFIGURE_USING_C_COMPILER_MIXED_COMPILATION ?= YES
+
 # -# Whether to use static compilation (only applicable to generating executable programs) #
 #  - Parameter = [YES] Using static compilation, all the dependent files will be included during the compilation process. It has less dependence on the running environment and is highly compatible; however, the generated program is relatively large.
 #  - Parameter = [NO]  Using dynamic compilation, the compiled program has a relatively small size. It relies on dynamic libraries and cannot run independently.
@@ -318,78 +335,70 @@ MF_CONFIGURE_USING_FORMATTEND_LOG ?= YES
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= CC
-#    -- ?= [CC]
 #    -- ?= Building
 #    -- ?= Compiling
-MF_CONFIGURE_FORMATTEND_LOG_CC_OBJECT_SHOW_STRING ?= CC
+MF_CONFIGURE_FORMATTEND_LOG_CC_OBJECT_SHOW_STRING ?= cc
 
 # -# Compile log using formatted display strings(.cpp -> .o) #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= CPP
-#    -- ?= [CPP]
 #    -- ?= Building
 #    -- ?= Compiling
-MF_CONFIGURE_FORMATTEND_LOG_CPP_OBJECT_SHOW_STRING ?= CPP
+MF_CONFIGURE_FORMATTEND_LOG_CPP_OBJECT_SHOW_STRING ?= cpp
 
 # -# Compile log using formatted display strings(.c -> .s) or (.cpp -> .s) #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= AS
-#    -- ?= [AS]
-#    -- ?= [ASSEMBLY]
 #    -- ?= Building
 #    -- ?= Compiling
-MF_CONFIGURE_FORMATTEND_LOG_ASSEMBLE_SHOW_STRING ?= AS
+MF_CONFIGURE_FORMATTEND_LOG_ASSEMBLE_SHOW_STRING ?= as
 
 # -# Compile log using formatted display strings(.c -> .i) or (.cpp -> .ii) #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= PR
-#    -- ?= [PR]
 #    -- ?= [PREPROCESS]
 #    -- ?= Building
 #    -- ?= Compiling
-MF_CONFIGURE_FORMATTEND_LOG_PREPROCESS_SHOW_STRING ?= PR
+MF_CONFIGURE_FORMATTEND_LOG_PREPROCESS_SHOW_STRING ?= pr
 
 # -# Generate a log for the link packaging process of the static library, using formatted display strings #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= AR
-#    -- ?= [AR]
 #    -- ?= linking
 #    -- ?= package
-MF_CONFIGURE_FORMATTEND_LOG_LIBRARY_STATIC_SHOW_STRING ?= AR
+MF_CONFIGURE_FORMATTEND_LOG_LIBRARY_STATIC_SHOW_STRING ?= ar
 
 # -# Generate dynamic library logs by packaging the links, using formatted display strings #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= LD
-#    -- ?= [LD]
 #    -- ?= linking
 #    -- ?= package
-MF_CONFIGURE_FORMATTEND_LOG_LIBRARY_DYNAMIC_SHOW_STRING ?= LD
+MF_CONFIGURE_FORMATTEND_LOG_LIBRARY_DYNAMIC_SHOW_STRING ?= ld
 
 # -# Generate logs for the link packaging process of the executable program, using formatted display strings #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= LD
-#    -- ?= [LD]
 #    -- ?= linking
 #    -- ?= package
-MF_CONFIGURE_FORMATTEND_LOG_EXECUTE_SHOW_STRING ?= LD
+MF_CONFIGURE_FORMATTEND_LOG_EXECUTE_SHOW_STRING ?= ld
 
 #----------------------------
 # - Debugging options
 #----------------------------
 #  - Note : 
-#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_DEBUG_OPTIONS; otherwise, use MF_CONFIGURE_CPP_DEBUG_OPTIONS.
 #    -- += -g        During the compilation process, debugging information is generated.
 #    -- += -gstabs   This option claims debugging information in the stabs format, but does not include gdb debugging information. 
 #    -- += -gstabs+  This option claims the debugging information in the stabs format, and also includes additional debugging information that is only for use by gdb.
@@ -399,14 +408,14 @@ MF_CONFIGURE_FORMATTEND_LOG_EXECUTE_SHOW_STRING ?= LD
 #  - Example : 
 #    -- += -g
 #    -- += -ggdb
-MF_CONFIGURE_C_FLAGS   ?= -g
-MF_CONFIGURE_CPP_FLAGS ?= -g
+MF_CONFIGURE_C_DEBUG_OPTIONS   ?= -g
+MF_CONFIGURE_CPP_DEBUG_OPTIONS ?= -g
 
 #----------------------------
 # - Error and Alert Options
 #----------------------------
 #  - Note : 
-#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_ERROR_ALERT_OPTIONS; otherwise, use MF_CONFIGURE_CPP_ERROR_ALERT_OPTIONS.
 #    -- += -w To disable all compilation warnings
 #    -- += -Wall To enable all common warnings (unused variables, uninitialized variables, undeclared functions, etc.)
 #    -- += -Wextra To add additional warnings beyond -Wall (such as empty parameters, implicit loss of type conversions, etc.)
@@ -429,73 +438,84 @@ MF_CONFIGURE_CPP_FLAGS ?= -g
 #    -- += -Wno-unused-function To disable warnings about unused functions
 #    -- += ...
 #  - Example : 
-#    -- += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
-#    -- += -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
-#    -- += -Wall -Werror
-#    -- += -Wall
-MF_CONFIGURE_C_FLAGS   += -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
-MF_CONFIGURE_CPP_FLAGS += -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+#    -- ?= -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+#    -- ?= -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+#    -- ?= -Wall -Werror
+#    -- ?= -Wall
+MF_CONFIGURE_C_ERROR_ALERT_OPTIONS   ?= -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+MF_CONFIGURE_CPP_ERROR_ALERT_OPTIONS ?= -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
 
 #----------------------------
 # - Dynamic library export symbols
 #----------------------------
 #  - Note : 
-#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_DYNAMIC_SYMBOLS; otherwise, use MF_CONFIGURE_CPP_DYNAMIC_SYMBOLS.
 #    -- It is recommended to disable in the RELEASE version.
-#    -- += -rdynamic Dynamic library export symbols
+#    -- ?= -rdynamic Dynamic library export symbols
 #  - Example : 
-#    -- += -rdynamic
-#    -- +=
-#MF_CONFIGURE_C_FLAGS   += -rdynamic
-#MF_CONFIGURE_CPP_FLAGS += -rdynamic
+#    -- ?= -rdynamic
+#    -- ?=
+MF_CONFIGURE_C_DYNAMIC_SYMBOLS   ?= 
+MF_CONFIGURE_CPP_DYNAMIC_SYMBOLS ?= 
 
 #----------------------------
 # - Specify the compiler version
 #----------------------------
 #  - Note : 
-#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
-#    -- += -std=c99
-#    -- += -std=c++11
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_COMPILER_VERSION; otherwise, use MF_CONFIGURE_CPP_COMPILER_VERSION.
+#    -- ?= -std=c99
+#    -- ?= -std=c++11
 #  - Example : 
-#    -- += -std=c99
-#    -- += -std=c++11
-#    -- +=
+#    -- ?= -std=c99
+#    -- ?= -std=c++11
+#    -- ?=
 
-#MF_CONFIGURE_C_FLAGS   += -std=c99
-#MF_CONFIGURE_CPP_FLAGS += -std=c++11
+MF_CONFIGURE_C_COMPILER_VERSION   ?= 
+MF_CONFIGURE_CPP_COMPILER_VERSION ?= 
 
 #----------------------------
 # - Compiler optimization level
 #----------------------------
 #  - Note : 
-#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
-#    -- += -O0 No optimization, retains complete debugging information, code execution is the slowest, suitable for development and debugging phases.
-#    -- += -O1 Basic optimization, slightly improves performance, does not affect debugging, suitable for debugging versions with low performance requirements.
-#    -- += -O2 Medium optimization, fully enables security optimizations, significantly improves performance, compile time is controllable, default choice for release versions.
-#    -- += -O3 Highly optimized, may increase code size and compilation time, occasionally has compatibility issues, code execution speed is fast, suitable for specific scenarios such as high-performance computing.
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_OPTIMIZATION_LEVEL; otherwise, use MF_CONFIGURE_CPP_OPTIMIZATION_LEVEL.
+#    -- ?= -O0 No optimization, retains complete debugging information, code execution is the slowest, suitable for development and debugging phases.
+#    -- ?= -O1 Basic optimization, slightly improves performance, does not affect debugging, suitable for debugging versions with low performance requirements.
+#    -- ?= -O2 Medium optimization, fully enables security optimizations, significantly improves performance, compile time is controllable, default choice for release versions.
+#    -- ?= -O3 Highly optimized, may increase code size and compilation time, occasionally has compatibility issues, code execution speed is fast, suitable for specific scenarios such as high-performance computing.
 #  - Example : 
-#    -- += -O2
-#    -- += -O1
-#    -- += -O0
-#MF_CONFIGURE_C_FLAGS   += -O2
-#MF_CONFIGURE_CPP_FLAGS += -O2
+#    -- ?= -O2
+#    -- ?= -O1
+#    -- ?= -O0
+MF_CONFIGURE_C_OPTIMIZATION_LEVEL   ?= 
+MF_CONFIGURE_CPP_OPTIMIZATION_LEVEL ?= 
 
 #----------------------------
 # - Other flags options
 #----------------------------
 #  - Note : 
 #    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
-#    -- +=
+#    -- ?= 
 #  - Example : 
-#    -- +=
-#MF_CONFIGURE_C_FLAGS   +=
-#MF_CONFIGURE_CPP_FLAGS +=
+#    -- ?= -fsanitize=address -fno-omit-frame-pointer -fsanitize-recover=address
+MF_CONFIGURE_C_FLAGS   ?= 
+MF_CONFIGURE_CPP_FLAGS ?= 
+
+#----------------------------
+# - Linker flag options
+#----------------------------
+#  - Note : 
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_LD_FLAGS; otherwise, use MF_CONFIGURE_CPP_LD_FLAGS.
+#    -- ?= 
+#  - Example : 
+#    -- ?= -fsanitize=address -fno-omit-frame-pointer -fsanitize-recover=address
+MF_CONFIGURE_C_LD_FLAGS   ?= 
+MF_CONFIGURE_CPP_LD_FLAGS ?= 
 
 #----------------------------
 # - Compilation options that are applied to generate the .o file
 #----------------------------
 #  - Note : 
-#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_OBJECTS_FLAGS; otherwise, use MF_CONFIGURE_CPP_OBJECTS_FLAGS.
 #    -- ?= -MMD  : Generate dependency files, automatically generate .d dependency files, such as main.c → main.d.
 #    -- ?= -MP   : In the generated .d file, add an independent pseudo-target for each header file. This ensures that make does not report an error when the header file is deleted.
 #    -- ?= -fPIC : Generate position-independent code, which is used for compiling dynamic link libraries, but it is not commonly used here.
@@ -577,8 +597,8 @@ MF_CONFIGURE_USE_SHELL_TOOLS ?= BASH
 # - Version Information
 #============================
 MF_VERSION      := 2
-MF_SUBLEVEL     := 0
-MF_PATCHLEVEL   := 0
+MF_SUBLEVEL     := 3
+MF_PATCHLEVEL   := 1
 MF_NAME         := 'Universal Makefile'
 
 # Configuration completed
@@ -676,7 +696,6 @@ ifeq ($(strip $(MF_CONFIGURE_USE_SHELL_TOOLS)), BASH)
 else
     SHELL                                 := $(strip $(MF_CONFIGURE_WINDOWS_TOOLS))sh.exe
 endif
-
     # - Using the tools that are utilized in the 'makefile'
     MF_PLATFORM_USING_TOOLS_RM            := $(strip $(MF_CONFIGURE_WINDOWS_TOOLS))rm.exe -rf
     MF_PLATFORM_USING_TOOLS_MKDIR         := $(strip $(MF_CONFIGURE_WINDOWS_TOOLS))mkdir.exe -p
@@ -685,8 +704,6 @@ endif
     MF_PLATFORM_USING_TOOLS_ECHO          := $(strip $(MF_CONFIGURE_WINDOWS_TOOLS))echo.exe
     MF_PLATFORM_USING_TOOLS_SED           := $(strip $(MF_CONFIGURE_WINDOWS_TOOLS))sed.exe
     MF_PLATFORM_USING_TOOLS_AWK           := $(strip $(MF_CONFIGURE_WINDOWS_TOOLS))awk.exe
-    MF_PLATFORM_USING_TOOLS_SEQ           := $(strip $(MF_CONFIGURE_WINDOWS_TOOLS))seq.exe
-    MF_PLATFORM_USING_TOOLS_PRINTF        := $(strip $(MF_CONFIGURE_WINDOWS_TOOLS))printf.exe
 else
     # - Linux-specific Target File Prefixes
     #----------------------------
@@ -705,7 +722,6 @@ ifeq ($(strip $(MF_CONFIGURE_USE_SHELL_TOOLS)), BASH)
 else
     SHELL                                 := $(strip $(MF_CONFIGURE_LINUX_TOOLS))sh
 endif
-
     # Using the tools that are utilized in the 'makefile'
     #----------------------------
     MF_PLATFORM_USING_TOOLS_RM            := $(strip $(MF_CONFIGURE_LINUX_TOOLS))rm -rf
@@ -715,8 +731,6 @@ endif
     MF_PLATFORM_USING_TOOLS_ECHO          := $(strip $(MF_CONFIGURE_LINUX_TOOLS))echo
     MF_PLATFORM_USING_TOOLS_SED           := $(strip $(MF_CONFIGURE_LINUX_TOOLS))sed
     MF_PLATFORM_USING_TOOLS_AWK           := $(strip $(MF_CONFIGURE_LINUX_TOOLS))awk
-    MF_PLATFORM_USING_TOOLS_SEQ           := $(strip $(MF_CONFIGURE_LINUX_TOOLS))seq
-    MF_PLATFORM_USING_TOOLS_PRINTF        := $(strip $(MF_CONFIGURE_LINUX_TOOLS))printf
 endif
 
 #============================
@@ -728,19 +742,6 @@ endif
 #----------------------------
 define function_find_subdirectories
 $(strip $(shell $(MF_PLATFORM_USING_TOOLS_FIND) $(1) -type d))
-endef
-
-#----------------------------
-# - String search function
-#   Parameter $1: The main string to search in
-#   Parameter $2: The substring to search for
-#   Return value: true or false
-#----------------------------
-define function_find_string
-$(strip $(shell $(MF_PLATFORM_USING_TOOLS_ECHO) "$(strip $(1))" | $(MF_PLATFORM_USING_TOOLS_AWK) \
-    'index($$0, "$(strip $(2))") > 0 { print "true"; exit } \
-    !index($$0, "$(strip $(2))") { print "false"; exit }'   \
-))
 endef
 
 #----------------------------
@@ -774,59 +775,6 @@ $(strip $(shell $(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $1)' | $(MF_PLATFORM_US
         if (c3 >= v3) { print "true"; exit }        \
         print "false";                              \
     }'                                              \
-))
-endef
-
-#----------------------------
-# - Check and calculate the number of occurrences of "../" in the longest string of the path
-#   Parameter $1: The path variable
-#   Return value: The number of occurrences of "../" in the longest string of the path (numeric)
-#----------------------------
-define function_upperlevel_path_count_occurrences
-$(strip $(shell $(MF_PLATFORM_USING_TOOLS_ECHO) '$1' | $(MF_PLATFORM_USING_TOOLS_AWK) \
-    'BEGIN { max_count = 0 } {                        \
-        for (i=1; i<=NF; i++) {                       \
-            count = 0; pos = 1; len = length($$i);    \
-            while (pos <= len-2) {                    \
-                if (substr($$i, pos, 3) == "../") {   \
-                    count++; pos += 3;                \
-                }                                     \
-                else { break; }                       \
-            }                                         \
-            if (count > max_count) max_count = count; \
-        }                                             \
-    }                                                 \
-    END { print max_count }'                          \
-))
-endef
-
-#----------------------------
-# - Output extended path
-#   Parameter $1: The number of extended path segments
-#   Return value: Returns $1 times of "_/" string
-#----------------------------
-define function_output_extend_path
-$(strip $(if $(filter-out 0,$(strip $1)), \
-    $(shell $(MF_PLATFORM_USING_TOOLS_ECHO) "" | $(MF_PLATFORM_USING_TOOLS_AWK) \
-        -v count=$(strip $1) \
-        'BEGIN { while (count-->0) printf "_/"} END {printf "\n"}' \
-    ) \
-))
-endef
-
-#----------------------------
-# - Simple normalize path function
-#   Parameter $1: The directory path to normalize
-#   Conversion rules:
-#   /./ -> /
-#   // -> /
-#
-# $(subst //,/,$(subst /./,/, $(1)))
-#----------------------------
-define function_simple_normalize_path
-$(strip $(shell $(MF_PLATFORM_USING_TOOLS_ECHO) '$1' | $(MF_PLATFORM_USING_TOOLS_SED) \
-    -e 's|/\./|/|g'    \
-    -e 's|//|/|g'      \
 ))
 endef
 
@@ -867,23 +815,6 @@ $(strip $(shell $(MF_PLATFORM_USING_TOOLS_ECHO) '$1' | $(MF_PLATFORM_USING_TOOLS
 ))
 endef
 endif # ifeq ($(MF_CONFIGURE_USE_EXPLICIT_DECLARATION), YES)
-
-
-#----------------------------
-# - Source file normalize path function
-#   Parameter $1: The directory path to normalize
-#   Conversion rules:
-#   /./ -> /
-#   // -> /
-#   __/ -> ../
-#----------------------------
-define function_src_normalize_path
-$(strip $(shell $(MF_PLATFORM_USING_TOOLS_ECHO) '$1' | $(MF_PLATFORM_USING_TOOLS_SED) \
-    -e 's|/\./|/|g'    \
-    -e 's|//|/|g'      \
-    -e 's|__/|\.\./|g' \
-))
-endef
 
 #----------------------------
 # - Clean intermediate files function
@@ -931,7 +862,7 @@ endif
 
     # Include all '.mk' files found under these directory paths
 ifneq ($(strip $(firstword $(MF_SUB_MAKEFILE_FIND_FILES))),)
-    include $(MF_SUB_MAKEFILE_FIND_FILES)
+    sinclude $(MF_SUB_MAKEFILE_FIND_FILES)
 endif
 endif
 
@@ -970,9 +901,6 @@ ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_SED)),)
 endif
 ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_AWK)),)
     $(error -> Note: The awk tool is not defined!)
-endif
-ifeq ($(strip $(MF_PLATFORM_USING_TOOLS_PRINTF)),)
-    $(error -> Note: The printf tool is not defined!)
 endif
 
 #----------------------------
@@ -1116,6 +1044,13 @@ MF_PARAM_ASSEMBLY                   := $(MF_SOURCES_C_ASSEMBLY_FILES) $(MF_SOURC
 # -- Using dynamic libraries requires adding the library directory to the environment variable.
 # -- For example: /data/lib/libtest.so, export LD_LIBRARY_PATH=/data/lib/:$LD_LIBRARY_PATH
 
+ifeq ($(strip $(firstword $(MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE))), C_TYPE)
+# Whether to use the C compiler for mixed compilation (that is, to compile both C and CPP files simultaneously)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_C_COMPILER_MIXED_COMPILATION))), YES)
+MF_CONFIGURE_ADD_STD_LIBRARY_NAME += stdc++
+endif
+endif
+
 # Search for all subfolders under this directory paths
 MF_PARAM_FIND_USING_LIBRARY_PATHS   := $(strip $(if $(strip $(MF_CONFIGURE_ADD_USER_LIBRARY_PATHS_AND_SUBPATHS)), $(call function_find_subdirectories, $(MF_CONFIGURE_ADD_USER_LIBRARY_PATHS_AND_SUBPATHS)),))
 # All the required library paths
@@ -1124,8 +1059,8 @@ MF_PARAM_ALL_USING_LIBRARY_PATHS    := $(strip $(sort $(MF_CONFIGURE_ADD_USER_LI
 MF_PARAM_USING_LIBRARY_PATHS        := $(strip $(if $(MF_PARAM_ALL_USING_LIBRARY_PATHS), $(addprefix -L, $(MF_PARAM_ALL_USING_LIBRARY_PATHS)),))
 
 # Library file information (library file prefix -l)
-MF_PARAM_ALL_USING_LIBRARY_NAME     := $(strip $(MF_CONFIGURE_ADD_USER_LIBRARY_NAME) $(MF_CONFIGURE_ADD_STD_LIBRARY_NAME))
-MF_PARAM_USING_LIBRARY_NAME         := $(strip $(if $(MF_PARAM_ALL_USING_LIBRARY_NAME), $(addprefix -l, $(MF_PARAM_ALL_USING_LIBRARY_NAME)),))
+MF_PARAM_ALL_USING_LIBRARY_NAME     := $(MF_CONFIGURE_ADD_USER_LIBRARY_NAME) $(MF_CONFIGURE_ADD_STD_LIBRARY_NAME)
+MF_PARAM_USING_LIBRARY_NAME         := $(if $(MF_PARAM_ALL_USING_LIBRARY_NAME), $(addprefix -l, $(MF_PARAM_ALL_USING_LIBRARY_NAME)),)
 
 # Library path information and library file information
 MF_PARAM_USING_LIBRARY_FLAGS        := $(strip $(MF_PARAM_USING_LIBRARY_PATHS) $(MF_PARAM_USING_LIBRARY_NAME))
@@ -1164,8 +1099,11 @@ MF_PARAM_DEFINE_FLAGS               := $(strip $(if $(strip $(MF_CONFIGURE_ADD_U
 #----------------------------
 # - Add GCC flags
 #----------------------------
-MF_PARAM_C_FLAGS                    := $(strip $(MF_CONFIGURE_C_FLAGS)) $(MF_PARAM_HEADER_FILE_PATHS) $(MF_PARAM_DEFINE_FLAGS)
-MF_PARAM_CPP_FLAGS                  := $(strip $(MF_CONFIGURE_CPP_FLAGS)) $(MF_PARAM_HEADER_FILE_PATHS) $(MF_PARAM_DEFINE_FLAGS)
+MF_PARAM_CFG_C_ALL_FLAGS            := $(strip $(MF_CONFIGURE_C_DEBUG_OPTIONS) $(MF_CONFIGURE_C_ERROR_ALERT_OPTIONS) $(MF_CONFIGURE_C_DYNAMIC_SYMBOLS) $(MF_CONFIGURE_C_COMPILER_VERSION) $(MF_CONFIGURE_C_OPTIMIZATION_LEVEL) $(MF_CONFIGURE_C_FLAGS))
+MF_PARAM_CFG_CPP_ALL_FLAGS          := $(strip $(MF_CONFIGURE_CPP_DEBUG_OPTIONS) $(MF_CONFIGURE_CPP_ERROR_ALERT_OPTIONS) $(MF_CONFIGURE_CPP_DYNAMIC_SYMBOLS) $(MF_CONFIGURE_CPP_COMPILER_VERSION) $(MF_CONFIGURE_CPP_OPTIMIZATION_LEVEL) $(MF_CONFIGURE_CPP_FLAGS))
+
+MF_PARAM_C_FLAGS                    := $(strip $(MF_PARAM_CFG_C_ALL_FLAGS)) $(MF_PARAM_HEADER_FILE_PATHS) $(MF_PARAM_DEFINE_FLAGS)
+MF_PARAM_CPP_FLAGS                  := $(strip $(MF_PARAM_CFG_CPP_ALL_FLAGS)) $(MF_PARAM_HEADER_FILE_PATHS) $(MF_PARAM_DEFINE_FLAGS)
 
 #----------------------------
 # - Redefine the target name
@@ -1194,15 +1132,26 @@ endif
 # - Compile the original file type
 #----------------------------
 ifeq ($(strip $(firstword $(MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE))), C_TYPE)
-    MF_PARAM_COMPILE_TOOL_CC  := $(strip $(MF_COMPILE_TOOL_CC))
+# Whether to use the C compiler for mixed compilation (that is, to compile both C and CPP files simultaneously)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_C_COMPILER_MIXED_COMPILATION))), YES)
+    MF_PARAM_CC_OBJECTS       := $(strip $(MF_PARAM_C_OBJECTS)) $(strip $(MF_PARAM_CPP_OBJECTS))
+else
     MF_PARAM_CC_OBJECTS       := $(strip $(MF_PARAM_C_OBJECTS))
+endif
+    MF_PARAM_COMPILE_TOOL_CC  := $(strip $(MF_COMPILE_TOOL_CC))
     MF_PARAM_CC_FLAGS         := $(strip $(MF_PARAM_C_FLAGS))
     MF_PARAM_CC_OBJECTS_FLAGS := $(strip $(MF_CONFIGURE_C_OBJECTS_FLAGS))
+    MF_PARAM_CC_LD_FLAGS      := $(strip $(MF_CONFIGURE_C_LD_FLAGS))
+
+    MF_PARAM_CC_OBJECTS_LOG   := $(strip $(MF_CONFIGURE_FORMATTEND_LOG_CC_OBJECT_SHOW_STRING))
 else
     MF_PARAM_COMPILE_TOOL_CC  := $(strip $(MF_COMPILE_TOOL_CPP))
     MF_PARAM_CC_OBJECTS       := $(strip $(MF_PARAM_C_OBJECTS)) $(strip $(MF_PARAM_CPP_OBJECTS))
     MF_PARAM_CC_FLAGS         := $(strip $(MF_PARAM_CPP_FLAGS))
     MF_PARAM_CC_OBJECTS_FLAGS := $(strip $(MF_CONFIGURE_CPP_OBJECTS_FLAGS))
+    MF_PARAM_CC_LD_FLAGS      := $(strip $(MF_CONFIGURE_CPP_LD_FLAGS))
+
+    MF_PARAM_CC_OBJECTS_LOG   := $(strip $(MF_CONFIGURE_FORMATTEND_LOG_CPP_OBJECT_SHOW_STRING))
 endif
 
 #----------------------------
@@ -1262,7 +1211,7 @@ define function_c_language_object_rule
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/$(strip $1) : $(strip $2)
 	@$$(MF_PLATFORM_USING_TOOLS_MKDIR) $$(@D)
 ifeq ($$(MF_OBJECT_USING_LOG), YES)
-	@$$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_CC_OBJECT_SHOW_STRING) $$<)'
+	@$$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_PARAM_CC_OBJECTS_LOG) $$<)'
 	@$$(MF_PARAM_COMPILE_TOOL_CC) $$(strip $$(MF_PARAM_CC_OBJECTS_FLAGS) -c '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
 else
 	$$(MF_PARAM_COMPILE_TOOL_CC) $$(strip $$(MF_PARAM_CC_OBJECTS_FLAGS) -c '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
@@ -1277,9 +1226,9 @@ $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/$(strip $1) : $(strip $2)
 	@$$(MF_PLATFORM_USING_TOOLS_MKDIR) $$(@D)
 ifeq ($$(MF_OBJECT_USING_LOG), YES)
 	@$$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_PREPROCESS_SHOW_STRING) $$< -> $$@)'
-	@$$(MF_COMPILE_TOOL_CPP) $$(strip -E '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
+	@$$(MF_PARAM_COMPILE_TOOL_CC) $$(strip -E '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
 else
-	$$(MF_COMPILE_TOOL_CPP) $$(strip -E '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
+	$$(MF_PARAM_COMPILE_TOOL_CC) $$(strip -E '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
 endif
 endef
 
@@ -1291,9 +1240,9 @@ $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/$(strip $1) : $(strip $2)
 	@$$(MF_PLATFORM_USING_TOOLS_MKDIR) $$(@D)
 ifeq ($$(MF_OBJECT_USING_LOG), YES)
 	@$$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_ASSEMBLE_SHOW_STRING) $$< -> $$@)'
-	@$$(MF_COMPILE_TOOL_CPP) $(strip -S '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
+	@$$(MF_PARAM_COMPILE_TOOL_CC) $(strip -S '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
 else
-	$$(MF_COMPILE_TOOL_CPP) $(strip -S '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
+	$$(MF_PARAM_COMPILE_TOOL_CC) $(strip -S '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
 endif
 endef
 
@@ -1304,10 +1253,10 @@ define function_cpp_language_object_rule
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/$(strip $1) : $(strip $2)
 	@$$(MF_PLATFORM_USING_TOOLS_MKDIR) $$(@D)
 ifeq ($$(MF_OBJECT_USING_LOG), YES)
-	@$$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_CPP_OBJECT_SHOW_STRING) $$<)'
-	@$$(MF_COMPILE_TOOL_CPP) $$(strip $$(MF_PARAM_CC_OBJECTS_FLAGS) -c '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
+	@$$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_PARAM_CC_OBJECTS_LOG) $$<)'
+	@$$(MF_PARAM_COMPILE_TOOL_CC) $$(strip $$(MF_PARAM_CC_OBJECTS_FLAGS) -c '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
 else
-	$$(MF_COMPILE_TOOL_CPP) $$(strip $$(MF_PARAM_CC_OBJECTS_FLAGS) -c '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
+	$$(MF_PARAM_COMPILE_TOOL_CC) $$(strip $$(MF_PARAM_CC_OBJECTS_FLAGS) -c '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
 endif
 endef
 
@@ -1359,7 +1308,7 @@ endif
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o : %.c
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
-	@$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_CC_OBJECT_SHOW_STRING) $<)'
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_PARAM_CC_OBJECTS_LOG) $<)'
 	@$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_PARAM_CC_OBJECTS_FLAGS) -c '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
 else
 	$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_PARAM_CC_OBJECTS_FLAGS) -c '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
@@ -1372,9 +1321,9 @@ $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.ii : %.cpp
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_PREPROCESS_SHOW_STRING) $< -> $@)'
-	@$(MF_COMPILE_TOOL_CPP) $(strip -E '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
+	@$(MF_PARAM_COMPILE_TOOL_CC) $(strip -E '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
 else
-	$(MF_COMPILE_TOOL_CPP) $(strip -E '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
+	$(MF_PARAM_COMPILE_TOOL_CC) $(strip -E '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
 endif
 
 #----------------------------
@@ -1384,9 +1333,9 @@ $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.s : %.cpp
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_ASSEMBLE_SHOW_STRING) $< -> $@)'
-	@$(MF_COMPILE_TOOL_CPP) $(strip -S '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
+	@$(MF_PARAM_COMPILE_TOOL_CC) $(strip -S '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
 else
-	$(MF_COMPILE_TOOL_CPP) $(strip -S '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
+	$(MF_PARAM_COMPILE_TOOL_CC) $(strip -S '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
 endif
 
 #----------------------------
@@ -1395,10 +1344,10 @@ endif
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o : %.cpp
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
-	@$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_CPP_OBJECT_SHOW_STRING) $<)'
-	@$(MF_COMPILE_TOOL_CPP) $(strip $(MF_PARAM_CC_OBJECTS_FLAGS) -c '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_PARAM_CC_OBJECTS_LOG) $<)'
+	@$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_PARAM_CC_OBJECTS_FLAGS) -c '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
 else
-	$(MF_COMPILE_TOOL_CPP) $(strip $(MF_PARAM_CC_OBJECTS_FLAGS) -c '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
+	$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_PARAM_CC_OBJECTS_FLAGS) -c '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
 endif
 
 #============================
@@ -1524,10 +1473,10 @@ MF_PARAM_TARGET = $(MF_PARAM_TARGET_EXECUTE)
 $(MF_PARAM_TARGET) : $(MF_PARAM_CC_OBJECTS)
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
-	@$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_PARAM_USING_STATIC_COMPILATION) -o $@ $^ $(MF_PARAM_USING_LIBRARY_FLAGS))
+	@$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_PARAM_USING_STATIC_COMPILATION) -o $@ $^ $(MF_PARAM_CC_LD_FLAGS) $(MF_PARAM_USING_LIBRARY_FLAGS))
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_EXECUTE_SHOW_STRING) $(MF_PARAM_TARGET_EXECUTE))'
 else
-	$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_PARAM_USING_STATIC_COMPILATION) -o $@ $^ $(MF_PARAM_USING_LIBRARY_FLAGS))
+	$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_PARAM_USING_STATIC_COMPILATION) -o $@ $^ $(MF_PARAM_CC_LD_FLAGS) $(MF_PARAM_USING_LIBRARY_FLAGS))
 endif
 
 # -- target file output release or debug begin
@@ -1682,3 +1631,11 @@ help:
 
 # - pseudo-target declaration
 .PHONY: $(MF_PHONY)
+
+#----------------------------
+# - Automatic dependency inclusion (.d)
+#   Without this, changes to header files will not trigger recompilation.
+#----------------------------
+ifneq ($(strip $(MF_PARAM_C_DEPENDENTS) $(MF_PARAM_CPP_DEPENDENTS)),)
+sinclude $(MF_PARAM_C_DEPENDENTS) $(MF_PARAM_CPP_DEPENDENTS)
+endif

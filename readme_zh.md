@@ -77,18 +77,14 @@ project
     ├── src
     │    └── ...
     ├── tools
-    │    ├── script
-    │    │    ├── build.bat
-    │    │    └── build.sh
-    │    ├── sub_makefile
-    │    │    ├── add_header.mk
-    │    │    ├── add_library.mk
-    │    │    └── add_source.mk
     │    ├── windows_tools
     │    │    └── ...
     │    └── ...
-    ├── build.bat (与 ./tools/script/build.bat 文件是一样的)
-    ├── build.sh (与 ./tools/script/build.sh 文件是一样的)
+    ├── script
+    │    └── template
+    │         ├── build.bat
+    │         ├── build.sh
+    │         └── sub_makefile
     ├── LICENSE
     └── Makefile
 ```

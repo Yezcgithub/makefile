@@ -79,18 +79,14 @@ project
     ├── src
     │    └── ...
     ├── tools
-    │    ├── script
-    │    │    ├── build.bat
-    │    │    └── build.sh
-    │    ├── sub_makefile
-    │    │    ├── add_header.mk
-    │    │    ├── add_library.mk
-    │    │    └── add_source.mk
     │    ├── windows_tools
     │    │    └── ...
     │    └── ...
-    ├── build.bat (Exactly the same as the ./tools/script/build.bat file)
-    ├── build.sh (Exactly the same as the file ./tools/script/build.sh)
+    ├── script
+    │    └── template
+    │         ├── build.bat
+    │         ├── build.sh
+    │         └── sub_makefile
     ├── LICENSE
     └── Makefile
 ```

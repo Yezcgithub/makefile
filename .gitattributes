@@ -1,0 +1,25 @@
+# Line break
+* text=auto
+# Text file → LF
+*.c    text eol=lf
+*.h    text eol=lf
+*.cpp  text eol=lf
+*.sh   text eol=lf
+*.md   text eol=lf
+*.mk   text eol=lf
+# Windows script → CRLF
+*.bat  text eol=crlf
+*.ps1  text eol=crlf
+
+# Binary
+*.png  binary
+*.jpg  binary
+*.gif  binary
+*.bin  binary
+*.dll  binary
+*.exe  binary
+*.pdf  binary
+*.7z   binary
+*.zip  binary
+*.tar  binary
+*.gz   binary
