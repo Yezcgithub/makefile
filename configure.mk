@@ -1,135 +1,45 @@
-# A makefile file that can be used for enterprise development and is not restricted by platforms
+#============================
+# - Project Information
+#============================
+# @File      : configure.mk
+# @Encoding  : UTF-8
 
+#============================
+# - License
+#============================
+# - MIT
+# https://mit-license.org/
 
+# Copyright © 2025 <Yezc/Makefile>
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
+# and associated documentation files (the “Software”), to deal in the Software without restriction, 
+# including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
 
+# The above copyright notice and this permission notice shall be included in all copies or 
+# substantial portions of the Software.
 
-## I. Introduction
+# THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
+# BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-​    I'm very glad that you can see this open-source project. I hope this project can be of help to you.
-
-​    This is a project that can be directly used by enterprises. With just simple configuration information, it can facilitate the management of your projects.
-
-#### 1. Concise
-​    The core consists of only one Makefile file.
-
-#### 2. Highly versatile
-​    Suitable for small projects, medium-sized projects and large projects.
-#### 3. Cross-platform
-​    It can automatically identify the platform it is on and can be used directly without any configuration.
-  -  In Linux, you can simply copy the Makefile file to the project directory and it can be used directly.
-  -  In Windows, the tool is required. You can find it in "./tools/windows_tools". Just copy the Makefile file and the "tools" folder at the same time and paste them into your project.
-
-#### 4. Simple configuration
-​    In the Makefile file, you only need to pay attention to the variables that have the prefix "MF_CONFIGURE_", and a large number of explanations and examples have been added. This makes it very convenient to meet the personalized management requirements for each project.
-#### 5. Use in conjunction with the script
-​    You don't need to modify the Makefile file. You can directly configure your personalized requirements in the script. You can view the build.sh script file (used on Linux) and the build.bat script file (used on Windows) in the project.
-#### 6. Robustness
-​    In the Makefile file, many checks have been added. This can reduce the likelihood of errors when executing "make" and can proactively alert you to any configuration issues.
-#### 7. Learning Materials
-​    If you want to learn or understand the knowledge of Makefile files in the near future, this project is an excellent learning resource. It covers most of the Makefile concepts and has numerous explanatory comments. The make.pdf file is saved in the "./doc" folder, which is also an indispensable learning material for you.
-
-
-
-## II. Download link
-
-| Project source code acquisition platform | Project link             |
-| -------- | -------------------------------------- |
-| github   | https://github.com/Yezcgithub/makefile |
-| gitee    | https://gitee.com/yezc/makefile        |
-| gitcode  | https://gitcode.com/Yeccc/makefile     |
-
-
-
-## III. Functions Description
-
-1. Support cross-platform
-
-2. Support configurable cross-compilation
-
-3. Supports configurable compilation of only C language files or mixed compilation of C and C++ files.
-
-4. Supports configurable generation of target files including executable programs, dynamic libraries, static libraries, and the generation of both dynamic and static libraries simultaneously.
-
-5. Support configurable generation of release, debug versions, as well as simultaneous generation of both release and debug versions.
-
-6. Support for configurable storage locations for the target files and the generated intermediate files
-
-7. Support configurable logging of formatted output at compile time
-
-8. Support commands for generating preprocessing files and generating assembly files
-
-9. Support the configuration of parameters in the script
-
-10. Support management of a single Makefile and management of multiple.mk files
-
-11. More configurations...
-
-
-
-## IV. Engineering Structure
-
-```sh
-project
-    ├── docs
-    ├── examples
-    │    ├── example1
-    │    ├── example2
-    │    ├── example3
-    │    └── ...
-    ├── src
-    │    └── ...
-    ├── tools
-    │    ├── windows_tools
-    │    │    └── ...
-    │    └── ...
-    ├── scripts
-    │    └── template
-    │         ├── build.bat
-    │         ├── build.sh
-    │         └── sub_makefile
-    ├── LICENSE
-    └── Makefile
-```
-
-
-
-## V. Support Commands
-
-For more detailed information, you can obtain it by using the command `make help`.
-
-```sh
-The following is a detailed explanation of all the commands.
-
-  make start_main  - Equivalent to the make build command.
-  make build       - Generating the target file, It is the same as directly executing the make command.
-  make rebuild     - Re-generate the target file.
-  make all         - Generate all files (such as .o, .d, .i, .s and object files).
-  make rebuild_all - Re-generate all files (.o, .d, .i, .s and object files), and debugging is available.
-  make clean       - Delete all intermediate files and target files.
-  make preprocess  - Generate preprocessing file.
-  make assemble    - Generate assembly file.
-  make object      - Generate object file.
-  make version     - Makefile version information.
-  make infoprint   - Print detailed information.
-  make help        - Help Information.
-```
-
-
-
-## VI. Configuration Instructions
-
-### 1、Script-Related Configuration
-
-```makefile
+#============================
+# - Makefile Configuration
+#============================
+#----------------------------
+# - Script-Related Configuration
+#----------------------------
 # -# Only script compilation method #
 #  - Parameter = [YES]  Can only be compiled by the script, using make will prompt to use the script to execute (the variable MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT must be set to YES in the script).
 #  - Parameter = [NO]   Can be compiled directly using make.
 MF_CONFIGURE_ONLY_STARTED_BY_SCRIPT ?= NO
-```
 
-### 2、Configure the sub-makefile file (.mk)
-
-```makefile
+#----------------------------
+# - Configure the sub-makefile file (.mk)
+#----------------------------
 #  # The configuration requires the use of sub-makefile files (.mk) for multi-file management #
 #    When developing large-scale projects, it is recommended to use this option. For smaller projects, it is not necessary to use it.
 #  - Parameter = [YES]  Use, In the project, a top-level makefile file and the .mk files in each subfolder are used together for management.
@@ -156,11 +66,10 @@ MF_CONFIGURE_ADD_SUB_MAKEFILE_PATHS_AND_SUBPATHS ?=
 #    -- ?= ./src ./src/timer ./src/test
 #    -- += ./test
 MF_CONFIGURE_ADD_SUB_MAKEFILE_PATHS ?=
-```
 
-### 3、Configure output target file information
-
-```makefile
+#----------------------------
+# - Configure output target file information
+#----------------------------
 # -# Set the name of the target file #
 #  - Note : 
 #    -- This option cannot be left blank.
@@ -182,11 +91,10 @@ MF_CONFIGURE_TARGET_RELEASE_OR_DEBUG ?= RELEASE_AND_DEBUG
 #  - Parameter = [LIBRARY_STATIC]             Generate (.a) static library file.
 #  - Parameter = [LIBRARY_STATIC_AND_DYNAMIC] Generate (.a and .so) dynamic and static library files.
 MF_CONFIGURE_OUTPUT_TARGET_FILE_TYPE ?= EXECUTE
-```
 
-### 4、Configure output folder information
-
-```makefile
+#----------------------------
+# - Configure output folder information
+#----------------------------
 # -# Set the output directory for the target file #
 #  - Note : 
 #    -- When this option is empty, it is equivalent to ?= .
@@ -206,11 +114,10 @@ MF_CONFIGURE_TARGET_FILE_OUTPUT_PATH ?= ./build
 #    -- ?= ./output
 #    -- ?= .
 MF_CONFIGURE_INTERMEDIATE_FILE_OUTPUT_PATH ?= ./build/output
-```
 
-### 5、Configure add source code information
-
-```makefile
+#----------------------------
+# - Configure add source code information
+#----------------------------
 # -# The path where the source files that need to be compiled are located (including all subfolders within this path) #
 #  - Note : 
 #    -- Add multiple paths, separated by spaces.
@@ -240,11 +147,10 @@ MF_CONFIGURE_ADD_SOURCE_CODE_PATHS ?=
 #    -- ?= ./src/main.c ./lib/test.c ./lib/timer/test.c
 #    -- += ./src/test.c
 MF_CONFIGURE_ADD_SOURCE_CODE_FILES ?=
-```
 
-### 6、Configure delete (exclude) source code information
-
-```makefile
+#----------------------------
+# - Configure delete (exclude) source code information
+#----------------------------
 # -# Delete (exclude) the path where the compilation source files are located (including all subfolders within that path) #
 #  - Note : 
 #    -- Add multiple paths, separated by spaces.
@@ -275,11 +181,10 @@ MF_CONFIGURE_DELETE_SOURCE_CODE_PATHS ?=
 #    -- ?= ./src/main.c ./lib/test.c ./lib/timer/test.c
 #    -- += ./src/test.c
 MF_CONFIGURE_DELETE_SOURCE_CODE_FILES ?=
-```
 
-### 7、Configure header files information
-
-```makefile
+#----------------------------
+# - Configure header files information
+#----------------------------
 # -# Configure the path of header files to include the range # 
 #  - Parameter = [ONLY_CONFIGURE_PATHS]    Only including the paths that are configured through the MF_CONFIGURE_ADD_HEADER_FILE_PATHS_AND_SUBPATHS or MF_CONFIGURE_ADD_HEADER_FILE_PATHS variables.
 #  - Parameter = [BUILD_SOURCE_CODE_PATHS] In addition to ONLY_CONFIGURE_PATHS, it also includes the source file paths (source code compilation paths) that have not been deleted (excluded).
@@ -310,11 +215,10 @@ MF_CONFIGURE_ADD_HEADER_FILE_PATHS_AND_SUBPATHS ?=
 #    -- ?= ../src/inc ./lib ./lib/test/inc
 #    -- += ../lib/inc
 MF_CONFIGURE_ADD_HEADER_FILE_PATHS ?=
-```
 
-### 8、Configuration library information
-
-```makefile
+#----------------------------
+# - Configuration library information
+#----------------------------
 # -# Add the standard library name #
 #  - Note : 
 #    -- Add the standard library name.
@@ -358,11 +262,10 @@ MF_CONFIGURE_ADD_USER_LIBRARY_PATHS ?=
 #    -- += timer
 #    -- += test
 MF_CONFIGURE_ADD_USER_LIBRARY_NAME ?=
-```
 
-### 9、Configure user macro information
-
-```makefile
+#----------------------------
+# - Configure user macro information
+#----------------------------
 # -# Add user macro definitions #
 #  - Note : 
 #    -- You can use macros in your application.
@@ -375,15 +278,31 @@ MF_CONFIGURE_ADD_USER_LIBRARY_NAME ?=
 #    -- += __YECC_NUM=1
 #    -- += APP_VERSION=\"1.0.0\"
 MF_CONFIGURE_ADD_USER_DEFINE ?=
-```
 
-### 10、Compilation configuration
-
-```makefile
+#----------------------------
+# - Compilation configuration
+#----------------------------
 # -# Compile original file type #
 #  - Parameter = [CPP_TYPE] Use C++ compiler to compile C and C++ files.
 #  - Parameter = [C_TYPE]   Use C compiler to compile C files only.
 MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE ?= C_TYPE
+
+# -# Use the C compiler for mixed compilation #
+#  - Note : 
+#    -- This option is only effective when MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is set to C_TYPE.
+#    -- If it is 'YES', the 'stdc++' library will be automatically added to the link.
+#    -- If it is "YES", then the .h file must contain the following macros; otherwise, an error will occur during the linking process.
+#       --- #ifdef __cplusplus
+#       --- extern "C" {
+#       --- #endif
+#
+#       --- #ifdef __cplusplus
+#       ---  } /*extern "C"*/
+#       --- #endif
+#
+#  - Parameter = [YES] Use the C compiler to perform mixed compilation of C and C++ source codes
+#  - Parameter = [NO]  Only compile the C files
+MF_CONFIGURE_USING_C_COMPILER_MIXED_COMPILATION ?= YES
 
 # -# Whether to use static compilation (only applicable to generating executable programs) #
 #  - Parameter = [YES] Using static compilation, all the dependent files will be included during the compilation process. It has less dependence on the running environment and is highly compatible; however, the generated program is relatively large.
@@ -399,94 +318,93 @@ MF_CONFIGURE_DELETING_INTERMEDIATE_FILES ?= NO
 #  - Parameter = [YES] Use explicit declarations, which is not recommended. Creating explicit rules before compilation may slow down the compilation process, especially when there are many source files. Make version V3.81 or above is required to use this option. Otherwise, it will not take effect.
 #  - Parameter = [NO]  Do not use explicit declarations, which is recommended.
 MF_CONFIGURE_USE_EXPLICIT_DECLARATION ?= NO
-```
 
-### 11、Log configuration
-
-```makefile
+#----------------------------
+# - Log configuration
+#----------------------------
 # -# The compilation process console log is displayed in a formatted manner #
 #  - Parameter = [YES] Using formatted display, which can print the currently compiling file name in a neatly formatted manner.
 #  - Parameter = [NO]  Print compilation logs.
 MF_CONFIGURE_USING_FORMATTEND_LOG ?= YES
+
+# -# During compilation, the explicit compiler string printing is determined by the file type. #
+#  The strings printed by the explicit tool are determined by MF_CONFIGURE_FORMATTEND_LOG_CC_OBJECT_SHOW_STRING and MF_CONFIGURE_FORMATTEND_LOG_CPP_OBJECT_SHOW_STRING.
+#  - Note : 
+#    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
+#
+#  - Parameter = [YES] The printing string is determined by the file type; for example, for files with the extension ".c", the printing string is "cc", and for files with the extension ".cpp", the printing string is "cpp".
+#  - Parameter = [NO]  The printed string is determined by the compiler being used; for example: when using the gcc tool, the printed string is "cc", and when using the g++ tool, the printed string is "cpp"
+MF_CONFIGURE_FORMATTEND_LOG_OBJECT_USING_FILE_TYPE_SHOW ?= YES
 
 # -# Compile log using formatted display strings(.c -> .o) #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= CC
-#    -- ?= [CC]
 #    -- ?= Building
 #    -- ?= Compiling
-MF_CONFIGURE_FORMATTEND_LOG_CC_OBJECT_SHOW_STRING ?= CC
+MF_CONFIGURE_FORMATTEND_LOG_CC_OBJECT_SHOW_STRING ?= cc
 
 # -# Compile log using formatted display strings(.cpp -> .o) #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= CPP
-#    -- ?= [CPP]
 #    -- ?= Building
 #    -- ?= Compiling
-MF_CONFIGURE_FORMATTEND_LOG_CPP_OBJECT_SHOW_STRING ?= CPP
+MF_CONFIGURE_FORMATTEND_LOG_CPP_OBJECT_SHOW_STRING ?= cpp
 
 # -# Compile log using formatted display strings(.c -> .s) or (.cpp -> .s) #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= AS
-#    -- ?= [AS]
-#    -- ?= [ASSEMBLY]
 #    -- ?= Building
 #    -- ?= Compiling
-MF_CONFIGURE_FORMATTEND_LOG_ASSEMBLE_SHOW_STRING ?= AS
+MF_CONFIGURE_FORMATTEND_LOG_ASSEMBLE_SHOW_STRING ?= as
 
 # -# Compile log using formatted display strings(.c -> .i) or (.cpp -> .ii) #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= PR
-#    -- ?= [PR]
 #    -- ?= [PREPROCESS]
 #    -- ?= Building
 #    -- ?= Compiling
-MF_CONFIGURE_FORMATTEND_LOG_PREPROCESS_SHOW_STRING ?= PR
+MF_CONFIGURE_FORMATTEND_LOG_PREPROCESS_SHOW_STRING ?= pr
 
 # -# Generate a log for the link packaging process of the static library, using formatted display strings #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= AR
-#    -- ?= [AR]
 #    -- ?= linking
 #    -- ?= package
-MF_CONFIGURE_FORMATTEND_LOG_LIBRARY_STATIC_SHOW_STRING ?= AR
+MF_CONFIGURE_FORMATTEND_LOG_LIBRARY_STATIC_SHOW_STRING ?= ar
 
 # -# Generate dynamic library logs by packaging the links, using formatted display strings #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= LD
-#    -- ?= [LD]
 #    -- ?= linking
 #    -- ?= package
-MF_CONFIGURE_FORMATTEND_LOG_LIBRARY_DYNAMIC_SHOW_STRING ?= LD
+MF_CONFIGURE_FORMATTEND_LOG_LIBRARY_DYNAMIC_SHOW_STRING ?= ld
 
 # -# Generate logs for the link packaging process of the executable program, using formatted display strings #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
 #  - Example : 
 #    -- ?= LD
-#    -- ?= [LD]
 #    -- ?= linking
 #    -- ?= package
-MF_CONFIGURE_FORMATTEND_LOG_EXECUTE_SHOW_STRING ?= LD
-```
+MF_CONFIGURE_FORMATTEND_LOG_EXECUTE_SHOW_STRING ?= ld
 
-### 12、Debugging options
-
-```makefile
+#----------------------------
+# - Debugging options
+#----------------------------
 #  - Note : 
-#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_DEBUG_OPTIONS; otherwise, use MF_CONFIGURE_CPP_DEBUG_OPTIONS.
 #    -- += -g        During the compilation process, debugging information is generated.
 #    -- += -gstabs   This option claims debugging information in the stabs format, but does not include gdb debugging information. 
 #    -- += -gstabs+  This option claims the debugging information in the stabs format, and also includes additional debugging information that is only for use by gdb.
@@ -496,15 +414,14 @@ MF_CONFIGURE_FORMATTEND_LOG_EXECUTE_SHOW_STRING ?= LD
 #  - Example : 
 #    -- += -g
 #    -- += -ggdb
-MF_CONFIGURE_C_FLAGS   ?= -g
-MF_CONFIGURE_CPP_FLAGS ?= -g
-```
+MF_CONFIGURE_C_DEBUG_OPTIONS   ?= -g
+MF_CONFIGURE_CPP_DEBUG_OPTIONS ?= -g
 
-### 13、Error and Alert Options
-
-```makefile
+#----------------------------
+# - Error and Alert Options
+#----------------------------
 #  - Note : 
-#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_ERROR_ALERT_OPTIONS; otherwise, use MF_CONFIGURE_CPP_ERROR_ALERT_OPTIONS.
 #    -- += -w To disable all compilation warnings
 #    -- += -Wall To enable all common warnings (unused variables, uninitialized variables, undeclared functions, etc.)
 #    -- += -Wextra To add additional warnings beyond -Wall (such as empty parameters, implicit loss of type conversions, etc.)
@@ -527,78 +444,84 @@ MF_CONFIGURE_CPP_FLAGS ?= -g
 #    -- += -Wno-unused-function To disable warnings about unused functions
 #    -- += ...
 #  - Example : 
-#    -- += -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
-#    -- += -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
-#    -- += -Wall -Werror
-#    -- += -Wall
-MF_CONFIGURE_C_FLAGS   += -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
-MF_CONFIGURE_CPP_FLAGS += -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
-```
+#    -- ?= -Wall -Werror -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+#    -- ?= -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+#    -- ?= -Wall -Werror
+#    -- ?= -Wall
+MF_CONFIGURE_C_ERROR_ALERT_OPTIONS   ?= -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
+MF_CONFIGURE_CPP_ERROR_ALERT_OPTIONS ?= -Wall -Wfatal-errors -Wunused-function -Wunused-label -Wconversion
 
-### 14、Dynamic library export symbols
-
-```makefile
+#----------------------------
+# - Dynamic library export symbols
+#----------------------------
 #  - Note : 
-#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_DYNAMIC_SYMBOLS; otherwise, use MF_CONFIGURE_CPP_DYNAMIC_SYMBOLS.
 #    -- It is recommended to disable in the RELEASE version.
-#    -- += -rdynamic Dynamic library export symbols
+#    -- ?= -rdynamic Dynamic library export symbols
 #  - Example : 
-#    -- += -rdynamic
-#    -- +=
-#MF_CONFIGURE_C_FLAGS   += -rdynamic
-#MF_CONFIGURE_CPP_FLAGS += -rdynamic
-```
+#    -- ?= -rdynamic
+#    -- ?=
+MF_CONFIGURE_C_DYNAMIC_SYMBOLS   ?= 
+MF_CONFIGURE_CPP_DYNAMIC_SYMBOLS ?= 
 
-### 15、Specify the compiler version
+#----------------------------
+# - Specify the compiler version
+#----------------------------
+#  - Note : 
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_COMPILER_VERSION; otherwise, use MF_CONFIGURE_CPP_COMPILER_VERSION.
+#    -- ?= -std=c99
+#    -- ?= -std=c++11
+#  - Example : 
+#    -- ?= -std=c99
+#    -- ?= -std=c++11
+#    -- ?=
 
-```makefile
+MF_CONFIGURE_C_COMPILER_VERSION   ?= 
+MF_CONFIGURE_CPP_COMPILER_VERSION ?= 
+
+#----------------------------
+# - Compiler optimization level
+#----------------------------
+#  - Note : 
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_OPTIMIZATION_LEVEL; otherwise, use MF_CONFIGURE_CPP_OPTIMIZATION_LEVEL.
+#    -- ?= -O0 No optimization, retains complete debugging information, code execution is the slowest, suitable for development and debugging phases.
+#    -- ?= -O1 Basic optimization, slightly improves performance, does not affect debugging, suitable for debugging versions with low performance requirements.
+#    -- ?= -O2 Medium optimization, fully enables security optimizations, significantly improves performance, compile time is controllable, default choice for release versions.
+#    -- ?= -O3 Highly optimized, may increase code size and compilation time, occasionally has compatibility issues, code execution speed is fast, suitable for specific scenarios such as high-performance computing.
+#  - Example : 
+#    -- ?= -O2
+#    -- ?= -O1
+#    -- ?= -O0
+MF_CONFIGURE_C_OPTIMIZATION_LEVEL   ?= 
+MF_CONFIGURE_CPP_OPTIMIZATION_LEVEL ?= 
+
+#----------------------------
+# - Other flags options
+#----------------------------
 #  - Note : 
 #    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
-#    -- += -std=c99
-#    -- += -std=c++11
+#    -- ?= 
 #  - Example : 
-#    -- += -std=c99
-#    -- += -std=c++11
-#    -- +=
+#    -- ?= -fsanitize=address -fno-omit-frame-pointer -fsanitize-recover=address
+MF_CONFIGURE_C_FLAGS   ?= 
+MF_CONFIGURE_CPP_FLAGS ?= 
 
-#MF_CONFIGURE_C_FLAGS   += -std=c99
-#MF_CONFIGURE_CPP_FLAGS += -std=c++11
-```
-
-### 16、Compiler optimization level
-
-```makefile
+#----------------------------
+# - Linker flag options
+#----------------------------
 #  - Note : 
-#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
-#    -- += -O0 No optimization, retains complete debugging information, code execution is the slowest, suitable for development and debugging phases.
-#    -- += -O1 Basic optimization, slightly improves performance, does not affect debugging, suitable for debugging versions with low performance requirements.
-#    -- += -O2 Medium optimization, fully enables security optimizations, significantly improves performance, compile time is controllable, default choice for release versions.
-#    -- += -O3 Highly optimized, may increase code size and compilation time, occasionally has compatibility issues, code execution speed is fast, suitable for specific scenarios such as high-performance computing.
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_LD_FLAGS; otherwise, use MF_CONFIGURE_CPP_LD_FLAGS.
+#    -- ?= 
 #  - Example : 
-#    -- += -O2
-#    -- += -O1
-#    -- += -O0
-#MF_CONFIGURE_C_FLAGS   += -O2
-#MF_CONFIGURE_CPP_FLAGS += -O2
-```
+#    -- ?= -fsanitize=address -fno-omit-frame-pointer -fsanitize-recover=address
+MF_CONFIGURE_C_LD_FLAGS   ?= 
+MF_CONFIGURE_CPP_LD_FLAGS ?= 
 
-### 17、Other flags options
-
-```makefile
+#----------------------------
+# - Compilation options that are applied to generate the .o file
+#----------------------------
 #  - Note : 
-#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
-#    -- +=
-#  - Example : 
-#    -- +=
-#MF_CONFIGURE_C_FLAGS   +=
-#MF_CONFIGURE_CPP_FLAGS +=
-```
-
-### 18、Compilation options that are applied to generate the .o file
-
-```makefile
-#  - Note : 
-#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_FLAGS; otherwise, use MF_CONFIGURE_CPP_FLAGS.
+#    -- When the value of MF_CONFIGURE_COMPILE_ORIGINAL_FILE_TYPE is C_TYPE, use MF_CONFIGURE_C_OBJECTS_FLAGS; otherwise, use MF_CONFIGURE_CPP_OBJECTS_FLAGS.
 #    -- ?= -MMD  : Generate dependency files, automatically generate .d dependency files, such as main.c → main.d.
 #    -- ?= -MP   : In the generated .d file, add an independent pseudo-target for each header file. This ensures that make does not report an error when the header file is deleted.
 #    -- ?= -fPIC : Generate position-independent code, which is used for compiling dynamic link libraries, but it is not commonly used here.
@@ -608,11 +531,10 @@ MF_CONFIGURE_CPP_FLAGS += -Wall -Wfatal-errors -Wunused-function -Wunused-label 
 #    -- ?= -MP
 MF_CONFIGURE_C_OBJECTS_FLAGS   ?= -MMD -MP
 MF_CONFIGURE_CPP_OBJECTS_FLAGS ?= -MMD -MP
-```
 
-### 19、Compilation tool configuration
-
-```makefile
+#----------------------------
+# - Compilation tool configuration
+#----------------------------
 # -# Specify the path prefix for the used compilation tool #
 #  - Note : 
 #    -- Default value is empty.
@@ -625,11 +547,10 @@ MF_CONFIGURE_CPP_OBJECTS_FLAGS ?= -MMD -MP
 #    -- ?= arm-linux-gnueabihf-
 #    -- ?= ./tools/compile_tools/arm-linux-gnueabihf-
 MF_CONFIGURE_COMPILE_PATH_PREFIX ?= 
-```
 
-### 20、Platform configuration
-
-```makefile
+#----------------------------
+# - Platform configuration
+#----------------------------
 # -# The platform used for configuring the makefile #
 #  - Note : 
 #    -- This determines on which platform the makefile is being used.
@@ -642,11 +563,10 @@ MF_CONFIGURE_COMPILE_PATH_PREFIX ?=
 #    -- ?= WINDOWS
 #    -- ?= LINUX
 MF_CONFIGURE_PLATFORM_OS ?= $(OS)
-```
 
-### 21、Configuration tool
-
-```makefile
+#----------------------------
+# - Configuration tool
+#----------------------------
 # -# Configure the Windows tool path #
 #  - Note : 
 #   -- This is mainly applicable to the situation where makefile is used in Windows.
@@ -678,20 +598,3 @@ MF_CONFIGURE_LINUX_TOOLS ?=
 #  - Parameter = [SH]   Use "sh" to execute the shell command tool
 #  - Parameter = [BASH] Use "bash" to execute the shell command tool
 MF_CONFIGURE_USE_SHELL_TOOLS ?= BASH
-```
-
-
-
-## VII. License
-
-The MIT License (MIT)
-
-https://mit-license.org/
-
-Copyright © 2025 <Yezc/Makefile>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

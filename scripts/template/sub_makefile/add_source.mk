@@ -2,9 +2,7 @@
 # - Project Information
 #============================
 # @file : add_source.mk
-# @General : UTF-8
-# @Description : A cross-platform Makefile for enterprise and general development
-# This Makefile is suitable for small, medium, and large projects
+# @Encoding : UTF-8
 
 #============================
 # - License

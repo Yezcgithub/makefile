@@ -68,8 +68,8 @@
 
 ```sh
 project
-    ├── doc
-    ├── example
+    ├── docs
+    ├── examples
     │    ├── example1
     │    ├── example2
     │    ├── example3
@@ -80,7 +80,7 @@ project
     │    ├── windows_tools
     │    │    └── ...
     │    └── ...
-    ├── script
+    ├── scripts
     │    └── template
     │         ├── build.bat
     │         ├── build.sh
@@ -96,20 +96,20 @@ project
 更多详细信息可通过 `make help` 来获取
 
 ```sh
-The following is a detailed explanation of all the commands.
+以下是对所有命令的详细说明。
 
-  make start_main  - Equivalent to the make build command.
-  make build       - Generating the target file, It is the same as directly executing the make command.
-  make rebuild     - Re-generate the target file.
-  make all         - Generate all files (such as .o, .d, .i, .s and object files).
-  make rebuild_all - Re-generate all files (.o, .d, .i, .s and object files), and debugging is available.
-  make clean       - Delete all intermediate files and target files.
-  make preprocess  - Generate preprocessing file.
-  make assemble    - Generate assembly file.
-  make object      - Generate object file.
-  make version     - Makefile version information.
-  make infoprint   - Print detailed information.
-  make help        - Help Information.
+  make start_main  - 相当于make build命令，第一个伪指令。
+  make build       - 生成目标文件，其过程与直接执行 make 命令相同。
+  make rebuild     - 重新生成目标文件（make工具版本不能低于V4.4）。
+  make all         - 生成所有文件（如 .o、.d、.i、.s 和目标文件）。
+  make rebuild_all - 重新生成所有文件（.o、.d、.i、.s 和目标文件），并支持调试功能（make工具版本不能低于V4.4）。
+  make clean       - 删除所有中间文件和目标文件。
+  make preprocess  - 生成预处理文件。
+  make assemble    - 生成汇编文件。
+  make object      - 生成目标文件。
+  make version     - Makefile版本信息。
+  make infoprint   - 打印详细信息。
+  make help        - 帮助信息。
 ```
 
 

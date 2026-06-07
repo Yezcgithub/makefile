@@ -330,6 +330,15 @@ MF_CONFIGURE_USE_EXPLICIT_DECLARATION ?= NO
 #  - Parameter = [NO]  Print compilation logs.
 MF_CONFIGURE_USING_FORMATTEND_LOG ?= YES
 
+# -# During compilation, the explicit compiler string printing is determined by the file type. #
+#  The strings printed by the explicit tool are determined by MF_CONFIGURE_FORMATTEND_LOG_CC_OBJECT_SHOW_STRING and MF_CONFIGURE_FORMATTEND_LOG_CPP_OBJECT_SHOW_STRING.
+#  - Note : 
+#    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
+#
+#  - Parameter = [YES] The printing string is determined by the file type; for example, for files with the extension ".c", the printing string is "cc", and for files with the extension ".cpp", the printing string is "cpp".
+#  - Parameter = [NO]  The printed string is determined by the compiler being used; for example: when using the gcc tool, the printed string is "cc", and when using the g++ tool, the printed string is "cpp"
+MF_CONFIGURE_FORMATTEND_LOG_OBJECT_USING_FILE_TYPE_SHOW ?= YES
+
 # -# Compile log using formatted display strings(.c -> .o) #
 #  - Note : 
 #    -- It takes effect only when MF_CONFIGURE_USING_FORMATTEND_LOG is set to "YES".
@@ -597,7 +606,7 @@ MF_CONFIGURE_USE_SHELL_TOOLS ?= BASH
 # - Version Information
 #============================
 MF_VERSION      := 2
-MF_SUBLEVEL     := 2
+MF_SUBLEVEL     := 3
 MF_PATCHLEVEL   := 1
 MF_NAME         := 'Universal Makefile'
 
@@ -752,29 +761,29 @@ endef
 #----------------------------
 define function_check_make_version
 $(strip $(shell $(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $1)' | $(MF_PLATFORM_USING_TOOLS_AWK) \
-    -v current=$(strip "$(MAKE_VERSION)")           \
-    'BEGIN {                                        \
-        cleaned_current = current;                  \
-        gsub(/^[^0-9.]+/, "", cleaned_current);     \
-        split(cleaned_current, curr, ".");          \
-        c1 = curr[1] + 0;                           \
-        c2 = (length(curr) >= 2) ? curr[2] + 0 : 0; \
-        c3 = (length(curr) >= 3) ? curr[3] + 0 : 0; \
-    } {                                             \
-        cleaned_input = $$0;                        \
-        gsub(/^[^0-9.]+/, "", cleaned_input);       \
-        split(cleaned_input, ver, ".");             \
-        v1 = ver[1] + 0;                            \
-        v2 = (length(ver) >= 2) ? ver[2] + 0 : 0;   \
-        v3 = (length(ver) >= 3) ? ver[3] + 0 : 0;   \
-                                                    \
-        if (c1 > v1) { print "true"; exit }         \
-        if (c1 < v1) { print "false"; exit }        \
-        if (c2 > v2) { print "true"; exit }         \
-        if (c2 < v2) { print "false"; exit }        \
-        if (c3 >= v3) { print "true"; exit }        \
-        print "false";                              \
-    }'                                              \
+    -v current=$(strip "$(MAKE_VERSION)")       \
+    'BEGIN {                                    \
+        cleaned_current = current;              \
+        gsub(/^[^0-9.]+/, "", cleaned_current); \
+        split(cleaned_current, curr, ".");      \
+        c1 = curr[1] + 0;                       \
+        c2 = curr[2] + 0;                       \
+        c3 = curr[3] + 0;                       \
+    } {                                         \
+        cleaned_input = $$0;                    \
+        gsub(/^[^0-9.]+/, "", cleaned_input);   \
+        split(cleaned_input, ver, ".");         \
+        v1 = ver[1] + 0;                        \
+        v2 = ver[2] + 0;                        \
+        v3 = ver[3] + 0;                        \
+                                                \
+        if (c1 > v1) { print "true"; exit }     \
+        if (c1 < v1) { print "false"; exit }    \
+        if (c2 > v2) { print "true"; exit }     \
+        if (c2 < v2) { print "false"; exit }    \
+        if (c3 >= v3) { print "true"; exit }    \
+        print "false";                          \
+    }'                                          \
 ))
 endef
 
@@ -1059,11 +1068,11 @@ MF_PARAM_ALL_USING_LIBRARY_PATHS    := $(strip $(sort $(MF_CONFIGURE_ADD_USER_LI
 MF_PARAM_USING_LIBRARY_PATHS        := $(strip $(if $(MF_PARAM_ALL_USING_LIBRARY_PATHS), $(addprefix -L, $(MF_PARAM_ALL_USING_LIBRARY_PATHS)),))
 
 # Library file information (library file prefix -l)
-MF_PARAM_ALL_USING_LIBRARY_NAME     := $(MF_CONFIGURE_ADD_USER_LIBRARY_NAME) $(MF_CONFIGURE_ADD_STD_LIBRARY_NAME)
+MF_PARAM_ALL_USING_LIBRARY_NAME     := $(strip $(MF_CONFIGURE_ADD_USER_LIBRARY_NAME) $(MF_CONFIGURE_ADD_STD_LIBRARY_NAME))
 MF_PARAM_USING_LIBRARY_NAME         := $(if $(MF_PARAM_ALL_USING_LIBRARY_NAME), $(addprefix -l, $(MF_PARAM_ALL_USING_LIBRARY_NAME)),)
 
 # Library path information and library file information
-MF_PARAM_USING_LIBRARY_FLAGS        := $(strip $(MF_PARAM_USING_LIBRARY_PATHS) $(MF_PARAM_USING_LIBRARY_NAME))
+MF_PARAM_USING_LIBRARY_FLAGS        := $(strip $(sort $(MF_PARAM_USING_LIBRARY_PATHS)) $(MF_PARAM_USING_LIBRARY_NAME))
 
 #----------------------------
 # - Add header file directory (prefix -I)
@@ -1211,7 +1220,11 @@ define function_c_language_object_rule
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/$(strip $1) : $(strip $2)
 	@$$(MF_PLATFORM_USING_TOOLS_MKDIR) $$(@D)
 ifeq ($$(MF_OBJECT_USING_LOG), YES)
+ifeq ($$(MF_CONFIGURE_FORMATTEND_LOG_OBJECT_USING_FILE_TYPE_SHOW), YES)
+	@$$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_CC_OBJECT_SHOW_STRING) $$<)'
+else
 	@$$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_PARAM_CC_OBJECTS_LOG) $$<)'
+endif # ifeq ($$(MF_CONFIGURE_FORMATTEND_LOG_OBJECT_USING_FILE_TYPE_SHOW), YES) end
 	@$$(MF_PARAM_COMPILE_TOOL_CC) $$(strip $$(MF_PARAM_CC_OBJECTS_FLAGS) -c '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
 else
 	$$(MF_PARAM_COMPILE_TOOL_CC) $$(strip $$(MF_PARAM_CC_OBJECTS_FLAGS) -c '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
@@ -1253,7 +1266,11 @@ define function_cpp_language_object_rule
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/$(strip $1) : $(strip $2)
 	@$$(MF_PLATFORM_USING_TOOLS_MKDIR) $$(@D)
 ifeq ($$(MF_OBJECT_USING_LOG), YES)
+ifeq ($$(MF_CONFIGURE_FORMATTEND_LOG_OBJECT_USING_FILE_TYPE_SHOW), YES)
+	@$$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_CPP_OBJECT_SHOW_STRING) $$<)'
+else
 	@$$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_PARAM_CC_OBJECTS_LOG) $$<)'
+endif # ifeq ($$(MF_CONFIGURE_FORMATTEND_LOG_OBJECT_USING_FILE_TYPE_SHOW), YES) end
 	@$$(MF_PARAM_COMPILE_TOOL_CC) $$(strip $$(MF_PARAM_CC_OBJECTS_FLAGS) -c '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
 else
 	$$(MF_PARAM_COMPILE_TOOL_CC) $$(strip $$(MF_PARAM_CC_OBJECTS_FLAGS) -c '$$<' -o '$$@' $$(MF_PARAM_CC_FLAGS))
@@ -1308,7 +1325,11 @@ endif
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o : %.c
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_FORMATTEND_LOG_OBJECT_USING_FILE_TYPE_SHOW))), YES)
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_CC_OBJECT_SHOW_STRING) $<)'
+else
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_PARAM_CC_OBJECTS_LOG) $<)'
+endif # ifeq ($(strip $(firstword $(MF_CONFIGURE_FORMATTEND_LOG_OBJECT_USING_FILE_TYPE_SHOW))), YES) end
 	@$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_PARAM_CC_OBJECTS_FLAGS) -c '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
 else
 	$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_PARAM_CC_OBJECTS_FLAGS) -c '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
@@ -1344,7 +1365,11 @@ endif
 $(MF_VERIFY_INTERMEDIATE_FILE_OUTPUT_PATH)/%.o : %.cpp
 	@$(MF_PLATFORM_USING_TOOLS_MKDIR) $(@D)
 ifeq ($(strip $(firstword $(MF_CONFIGURE_USING_FORMATTEND_LOG))), YES)
+ifeq ($(strip $(firstword $(MF_CONFIGURE_FORMATTEND_LOG_OBJECT_USING_FILE_TYPE_SHOW))), YES)
+	@$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_CONFIGURE_FORMATTEND_LOG_CPP_OBJECT_SHOW_STRING) $<)'
+else
 	@$(MF_PLATFORM_USING_TOOLS_ECHO) '$(strip $(MF_PARAM_CC_OBJECTS_LOG) $<)'
+endif # ifeq ($(strip $(firstword $(MF_CONFIGURE_FORMATTEND_LOG_OBJECT_USING_FILE_TYPE_SHOW))), YES) end
 	@$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_PARAM_CC_OBJECTS_FLAGS) -c '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
 else
 	$(MF_PARAM_COMPILE_TOOL_CC) $(strip $(MF_PARAM_CC_OBJECTS_FLAGS) -c '$<' -o '$@' $(MF_PARAM_CC_FLAGS))
